@@ -1,0 +1,69 @@
+
+<style>
+    .oaActCell {
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+    .oaActCellFooter {
+        font-size: 0.71em;
+    }
+    .oaPrevCell {
+        font-size: 0.9em;
+    }
+    .oaPrevCellFooter {
+        font-size: 0.85 em;
+    }
+</style>
+
+<table border="0" width="100%">
+    <tr>
+        <td colspan="5" height="6"></td>
+    </tr>
+    <tr>
+        <td width="6"></td>
+        <td width="30%">
+            <table class="dataTable" style="border-right:1px solid #e7e7e7;">
+                <tr>
+                    <th><strong>{{'OxidAnalysis_Ordered'|translate}}</stong></th>
+                </tr>
+                <tr class="subDataTable oaActCell" align="left">
+                    <td>{{ countThisOrder }}<br /><span class="oaActCellFooter">{{ txtThisRange }}</span></td>
+                </tr>
+                <tr class="subDataTable oaPrevCell" align="right">
+                    <td><strong>{{ countPrevOrder }}</strong><br /><span class="oaPrevCellFooter">{{ txtPrevRange }}</span></td>
+                </tr>
+            </table>
+        </td>
+        <td width="20" style="text-align:center;vertical-align:middle;">&#10152;</td>
+        <td width="30%">
+            <table class="dataTable" style="border-right:1px solid #e7e7e7;">
+                <tr>
+                    <th><strong>{{'OxidAnalysis_Ready2Send'|translate}}</stong></th>
+                </tr>
+                <tr class="subDataTable oaActCell" align="left">
+                    <td>{{ countReady }}<br /><span class="oaActCellFooter">{{'OxidAnalysis_Total'|translate}}</span></td>
+                </tr>
+                <tr class="subDataTable oaPrevCell" align="right">
+                    <td>{{ sumReady|number_format(2,'.',',') }}&nbsp;{{ siteCurrency }}<br /><span class="oaPrevCellFooter">{{'OxidAnalysis_GoodsValue'|translate}}</span></td>
+                </tr>
+            </table>
+        </td>
+        <td width="20" style="text-align:center;vertical-align:middle;">&#10152;</td>
+        <td width="30%">
+            <table class="dataTable" style="border-right:1px solid #e7e7e7;">
+                <tr>
+                    <th><strong>{{'OxidAnalysis_Send'|translate}}</stong></th>
+                </tr>
+                <tr class="subDataTable oaActCell" align="left">
+                    <td>{{ countThisSent }}<br /><span class="oaActCellFooter">{{ txtThisRange }}</span></td>
+                </tr>
+                <tr class="subDataTable oaPrevCell" align="right">
+                    <td>{{ countPrevSent }}<br /><span class="oaPrevCellFooter">{{ txtPrevRange }}</span></td>
+                </tr>
+            </table>
+        </td>
+        <td width="6"></td>
+    </tr>
+    <tr>
+        <td colspan="5" height="6"></td>
+    </tr>

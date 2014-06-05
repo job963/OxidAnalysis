@@ -1,0 +1,15 @@
+{
+    "name": "OxidAnalysis",
+    "description": "OXID eShop Analysis: Plugin for analyzing and visualizing data of the eCommerce solution OXID eSales.",
+    "version": "2.11.0",
+    "keywords": ["oxid", "eshop", "sales", "analysis", "visualization"],
+    "homepage": "https://github.com/job963",
+    "license": "GPL v3+",
+    "authors": [
+        {
+            "name": "Joachim Barthel",
+            "email": "jobarthel@gmail.com",
+            "homepage": "https://github.com/job963"
+        }
+    ]
+}
