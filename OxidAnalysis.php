@@ -39,7 +39,7 @@ class OxidAnalysis extends \Piwik\Plugin
     
     function addReportingMenuItems()
     {
-        MenuMain::getInstance()->add(Piwik::translate('OxidAnalysis_OxidAnalysis'), '', array('module' => 'OxidAnalysis', 'action' => 'dataTables'), true, 30);
+        MenuMain::getInstance()->add(Piwik::translate('OxidAnalysis_OxidAnalysis'), '', array('module' => 'OxidAnalysis', 'action' => 'reportRevenue'), true, 30);
 
         $i = 1;
         $this->addSubMenu(Piwik::translate('OxidAnalysis_Revenue'), 'reportRevenue', $i++);
@@ -86,7 +86,7 @@ class OxidAnalysis extends \Piwik\Plugin
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetLiveRevenue', 'OxidAnalysis', 'widgetLiveRevenue');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetNewsReg', 'OxidAnalysis', 'widgetNewsReg');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetRateAndReview', 'OxidAnalysis', 'widgetRateAndReview');
-        WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetLogistice', 'OxidAnalysis', 'widgetLogistics'); // nicht fertig
+        WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetLogistics', 'OxidAnalysis', 'widgetLogistics'); // nicht fertig
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetVoucherUse', 'OxidAnalysis', 'widgetVoucherUse');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetVoucherOverview', 'OxidAnalysis', 'widgetVoucherOverview');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetRevenueAlert', 'OxidAnalysis', 'widgetRevenueAlert');

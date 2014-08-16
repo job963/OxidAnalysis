@@ -3390,7 +3390,10 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
         $db = openDB($this);
 
         $dbData = $this->oaQuery($db, $sql, 'getPayTypeSums');
-        $totalSum = $dbData[0]['totalsum'];
+        if (count($dbData) !=0 )
+            $totalSum = $dbData[0]['totalsum'];
+        else
+            $totalSum = 0.0;
 
         $sql = "SELECT p.oxdesc, COUNT(*) AS ordercount, SUM(o.oxtotalordersum) AS totalordersum, (SUM(o.oxtotalordersum)/$totalSum*100.0) AS percentage "
                  . "FROM oxorder o, oxpayments p " 

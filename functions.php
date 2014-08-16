@@ -213,7 +213,7 @@ function percFormat($value, $conf)
 // Adds a title tooltip to the string
 function addTitle($value, $title)
 {
-    if (empty($conf->Style)) $conf->Style = '';
+    // if (empty($conf->Style)) $conf->Style = '';
     return '<span title="'.$title.'">' 
             . $value 
             . '</span>';
