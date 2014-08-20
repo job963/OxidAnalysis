@@ -1876,15 +1876,23 @@ class API extends \Piwik\Plugin\API
         $dateStart = $this->oaGetStartDate($date,$period);
         $dateEnd = $this->oaGetEndDate($date,$period);
 
-        $sql = "SELECT SUM(a.oxamount) AS artcount, a.oxartnum AS artno, CONCAT('<nobr>', a.oxtitle, '</nobr>') AS arttitle, SUM(a.oxbrutprice) AS artrev "
-             . "FROM oxorder o, oxorderarticles a " 
-             . "WHERE o.OXID = a.OXORDERID " 
+        $sql = "SELECT SUM(oa.oxamount) AS artcount, oa.oxartnum AS artno, CONCAT('<nobr>', oa.oxtitle, '</nobr>') AS arttitle, "
+                . "SUM(oa.oxbrutprice) AS artrev, "
+                . "SUM(oa.oxnetprice)"
+                    . "-IF(a.oxbprice=0.0,"
+                        . "IF(a.oxparentid!='',"
+                            . "(SELECT b.oxbprice FROM oxarticles b WHERE b.oxid=a.oxparentid),"
+                            . "a.oxbprice),"
+                        . "a.oxbprice)*SUM(oa.oxamount) AS artmargin "
+             . "FROM oxorder o, oxorderarticles oa, oxarticles a " 
+             . "WHERE o.oxid = oa.oxorderid "
+                . "AND oa.oxartid = a.oxid " 
                 . "AND DATE(o.oxorderdate) >= '{$dateStart}' "
                 . "AND DATE(o.oxorderdate)  <= '{$dateEnd}' "
                 . "AND o.oxshopid = {$this->ShopID[$this->SiteID]} "
                 . "AND o.oxstorno = 0 "
-                . "AND a.oxstorno = 0 "
-             . "GROUP BY a.oxtitle " 
+                . "AND oa.oxstorno = 0 "
+             . "GROUP BY oa.oxtitle " 
              . "ORDER BY artcount DESC "; 
 
         if ($this->DebugMode) logfile('debug', 'getTopSeller: '.$sql);
@@ -1908,6 +1916,7 @@ class API extends \Piwik\Plugin\API
         foreach($dbData as $value) {
                 $dbData[$i]['artcount'] = intFormat($dbData[$i]['artcount'], $this);
                 $dbData[$i]['artrev'] = $this->oaCurrFormat($dbData[$i]['artrev'], $this);
+                $dbData[$i]['artmargin'] = $this->oaCurrFormat($dbData[$i]['artmargin'], $this);
                 $i++;
         }
 
@@ -1931,14 +1940,22 @@ class API extends \Piwik\Plugin\API
         $dateStart = $this->oaGetStartDate($date,$period);
         $dateEnd = $this->oaGetEndDate($date,$period);
 
-        $sql = "SELECT sum(a.oxamount) AS artcount, a.oxartnum AS artno, CONCAT('<nobr>', a.oxtitle, '</nobr>') AS arttitle, SUM(a.oxbrutprice) AS artrev "
-             . "FROM oxorder o, oxorderarticles a " 
-             . "WHERE o.OXID = a.OXORDERID " 
+        $sql = "SELECT sum(oa.oxamount) AS artcount, oa.oxartnum AS artno, CONCAT('<nobr>', oa.oxtitle, '</nobr>') AS arttitle, "
+                . "SUM(oa.oxbrutprice) AS artrev, "
+                . "SUM(oa.oxnetprice)"
+                    . "-IF(a.oxbprice=0.0,"
+                        . "IF(a.oxparentid!='',"
+                            . "(SELECT b.oxbprice FROM oxarticles b WHERE b.oxid=a.oxparentid),"
+                            . "a.oxbprice),"
+                        . "a.oxbprice)*SUM(oa.oxamount) AS artmargin "
+             . "FROM oxorder o, oxorderarticles oa, oxarticles a " 
+             . "WHERE o.OXID = oa.OXORDERID "
+                . "AND oa.oxartid = a.oxid " 
                 . "AND DATE(o.oxorderdate) >= '{$dateStart}' "
                 . "AND DATE(o.oxorderdate)  <= '{$dateEnd}' "
                 . "AND o.oxshopid = {$this->ShopID[$this->SiteID]} "
-                . "AND (o.oxstorno = 1 OR a.oxstorno = 1) "
-                . "GROUP BY a.oxtitle " 
+                . "AND (o.oxstorno = 1 OR oa.oxstorno = 1) "
+                . "GROUP BY oa.oxtitle " 
              . "ORDER BY artcount DESC  "; 
 
         if ($this->DebugMode) logfile('debug', 'getTopCancels: '.$sql);
@@ -1962,6 +1979,7 @@ class API extends \Piwik\Plugin\API
         foreach($dbData as $value) {
                 $dbData[$i]['artcount'] = intFormat($dbData[$i]['artcount'], $this);
                 $dbData[$i]['artrev'] = $this->oaCurrFormat($dbData[$i]['artrev'], $this);
+                $dbData[$i]['artmargin'] = $this->oaCurrFormat($dbData[$i]['artmargin'], $this);
                 $i++;
         }
 
@@ -3658,6 +3676,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     
     function oaGetStartDate($date, $period)
     {
+        /*
         if ($period != "range")
             $date = Date::factory($date);
             
@@ -3683,9 +3702,20 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
             
             case "year":
                 $tDate = strtotime($date);
+                if ($this->DebugMode) logfile('debug', 'oaGetStartDate: date='.date( "Y-m-d",$tDate));
+                $piwikDate = Date::factory($date);
+		$date      = Period\Factory::build($period, $piwikDate);
+                if ($this->DebugMode) logfile('debug', 'oaGetStartDate: **date='.$date->getDateStart()->toString());
+                
                 return date( "Y-m-d", strtotime( "first day of this year", $tDate ) );
                 break;
         }
+        */
+        
+        $piwikDate = Date::factory($date);
+        $date      = Period\Factory::build($period, $piwikDate);
+        return $date->getDateStart()->toString();
+
         return;
     }
     
@@ -3693,6 +3723,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     
     function oaGetEndDate($date, $period)
     {
+        /*
         if ($period != "range")
             $date = Date::factory($date);
             
@@ -3721,6 +3752,12 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
                 return date( "Y-m-d", strtotime( "last day of this year", $tDate ) );
                 break;
         }
+        */
+        
+        $piwikDate = Date::factory($date);
+        $date      = Period\Factory::build($period, $piwikDate);
+        return $date->getDateEnd()->toString();
+
         return ;
     }
     

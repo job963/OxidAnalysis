@@ -1176,7 +1176,6 @@ class Controller extends \Piwik\Plugin\Controller
     function reportTopsnFlops()
     {
         $output = '';
-        //$output .= '<h2>Tops & Flops</h2>';
         $output .= '<table width="100%"><tr>';
         
         $output .= '<td>'.'<h3>' . Piwik::translate('OxidAnalysis_TopSeller') . '</h3>';
@@ -1202,14 +1201,15 @@ class Controller extends \Piwik\Plugin\Controller
 
         $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
 
-	$view->config->columns_to_display = array('artno', 'arttitle', 'artcount', 'artrev');
+	$view->config->columns_to_display = array('artno', 'arttitle', 'artcount', 'artrev', 'artmargin');
 		
         $view->config->translations['artno'] = Piwik::translate('OxidAnalysis_ArtNo');
         $view->config->translations['arttitle'] = Piwik::translate('OxidAnalysis_ArtTitle');
         $view->config->translations['artcount'] = Piwik::translate('OxidAnalysis_Count');
         $view->config->translations['artrev'] = Piwik::translate('OxidAnalysis_Revenue');
+        $view->config->translations['artmargin'] = Piwik::translate('OxidAnalysis_Margin');
         $view->requestConfig->filter_sort_column = 'artcount';
-        $view->requestConfig->filter_sort_order = 'asc';
+        $view->requestConfig->filter_sort_order = 'desc';
 		
         $view->requestConfig->filter_limit = 25;
         $view->config->show_exclude_low_population = false;
@@ -1231,14 +1231,15 @@ class Controller extends \Piwik\Plugin\Controller
 
         $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
 
-	$view->config->columns_to_display = array('artno', 'arttitle', 'artcount', 'artrev');
+	$view->config->columns_to_display = array('artno', 'arttitle', 'artcount', 'artrev', 'artmargin');
 		
         $view->config->translations['artno'] = Piwik::translate('OxidAnalysis_ArtNo');
         $view->config->translations['arttitle'] = Piwik::translate('OxidAnalysis_ArtTitle');
         $view->config->translations['artcount'] = Piwik::translate('OxidAnalysis_Count');
         $view->config->translations['artrev'] = Piwik::translate('OxidAnalysis_Revenue');
+        $view->config->translations['artmargin'] = Piwik::translate('OxidAnalysis_Margin');
         $view->requestConfig->filter_sort_column = 'artcount';
-        $view->requestConfig->filter_sort_order = 'asc';
+        $view->requestConfig->filter_sort_order = 'desc';
 		
         $view->requestConfig->filter_limit = 25;
         $view->config->show_exclude_low_population = false;
