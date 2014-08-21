@@ -1197,20 +1197,20 @@ class API extends \Piwik\Plugin\API
                 'num'     => 1,
                 'period'  => Piwik::translate('OxidAnalysis_PrevYear'),
                 'count'   => $countPrevYear,
-                'margin'  => alignRight( MetricsFormatter::getPrettyMoney($marginPrevYear,$idSite,TRUE) . $icoBlank),
-                'revenue' => alignRight( MetricsFormatter::getPrettyMoney($revenuePrevYear,$idSite,TRUE) . $icoBlank)
+                'margin'  => alignRight( $this->oaCurrFormat($marginPrevYear, $this) . $icoBlank),
+                'revenue' => alignRight( $this->oaCurrFormat($revenuePrevYear, $this) . $icoBlank)
             ));
         
-        $tipMargin  = $this->oaTrendTip( MetricsFormatter::getPrettyMoney($marginTrendYear,$idSite,TRUE), $marginForecastYear, $this );
-        $tipRevenue = $this->oaTrendTip( MetricsFormatter::getPrettyMoney($revenueTrendYear,$idSite,TRUE), $revenueForecastYear, $this );
+        $tipMargin  = $this->oaTrendTip( $this->oaCurrFormat($marginTrendYear, $this), $marginForecastYear, $this );
+        $tipRevenue = $this->oaTrendTip( $this->oaCurrFormat($revenueTrendYear, $this), $revenueForecastYear, $this );
         $icoMarginTrend  = $this->oaTrendIcon( $marginForecastYear, $marginPrevYear );
         $icoRevenueTrend = $this->oaTrendIcon( $revenueForecastYear, $revenuePrevYear );
         array_push($dbData, array(
                 'num'     => 2,
                 'period'  => Piwik::translate('OxidAnalysis_ThisYear'),
                 'count'   => $countThisYear,
-                'margin'  => alignRight(addTitle( MetricsFormatter::getPrettyMoney($marginThisYear,$idSite,TRUE), $tipMargin ).$icoMarginTrend),
-                'revenue' => alignRight(addTitle( MetricsFormatter::getPrettyMoney($revenueThisYear,$idSite,TRUE), $tipRevenue ).$icoRevenueTrend)
+                'margin'  => alignRight(addTitle( $this->oaCurrFormat($marginThisYear, $this), $tipMargin ).$icoMarginTrend),
+                'revenue' => alignRight(addTitle( $this->oaCurrFormat($revenueThisYear, $this), $tipRevenue ).$icoRevenueTrend)
             ));
         
         // -------- MONTH ----------
@@ -1218,20 +1218,20 @@ class API extends \Piwik\Plugin\API
                 'num' => 3,
                 'period' => Piwik::translate('OxidAnalysis_PrevMonth'),
                 'count' => $countPrevMonth,
-                'margin' => alignRight( MetricsFormatter::getPrettyMoney($marginPrevMonth,$idSite,TRUE) . $icoBlank),
-                'revenue' => alignRight( MetricsFormatter::getPrettyMoney($revenuePrevMonth,$idSite,TRUE) . $icoBlank)
+                'margin' => alignRight( $this->oaCurrFormat($marginPrevMonth, $this) . $icoBlank),
+                'revenue' => alignRight( $this->oaCurrFormat($revenuePrevMonth, $this) . $icoBlank)
             ));
         
-        $tipMargin  = $this->oaTrendTip( $marginTrendMonth, MetricsFormatter::getPrettyMoney($marginForecastMonth,$idSite,TRUE) , $this );
-        $tipRevenue = $this->oaTrendTip( $revenueTrendMonth, MetricsFormatter::getPrettyMoney($revenueForecastMonth,$idSite,TRUE) , $this );
+        $tipMargin  = $this->oaTrendTip( $marginTrendMonth, $this->oaCurrFormat($marginForecastMonth, $this) , $this );
+        $tipRevenue = $this->oaTrendTip( $revenueTrendMonth, $this->oaCurrFormat($revenueForecastMonth, $this) , $this );
         $icoMarginTrend  = $this->oaTrendIcon( $marginForecastMonth, $marginPrevMonth );
         $icoRevenueTrend = $this->oaTrendIcon( $revenueForecastMonth, $revenuePrevMonth );
         array_push($dbData, array(
                 'num' => 4,
                 'period' => Piwik::translate('OxidAnalysis_ThisMonth'),
                 'count' => $countThisMonth,
-                'margin' => alignRight(addTitle( MetricsFormatter::getPrettyMoney($marginThisMonth,$idSite,TRUE), $tipMargin ).$icoMarginTrend),
-                'revenue' => alignRight(addTitle( MetricsFormatter::getPrettyMoney($revenueThisMonth,$idSite,TRUE), $tipMargin ).$icoRevenueTrend)
+                'margin' => alignRight(addTitle( $this->oaCurrFormat($marginThisMonth, $this), $tipMargin ).$icoMarginTrend),
+                'revenue' => alignRight(addTitle( $this->oaCurrFormat($revenueThisMonth, $this), $tipMargin ).$icoRevenueTrend)
             ));
 
         // -------- WEEK ----------
@@ -1239,20 +1239,20 @@ class API extends \Piwik\Plugin\API
                 'num' => 5,
                 'period' => Piwik::translate('OxidAnalysis_PrevWeek'),
                 'count' => $countPrevWeek,
-                'margin' => alignRight( MetricsFormatter::getPrettyMoney($marginPrevWeek,$idSite,TRUE) . $icoBlank),
-                'revenue' => alignRight( MetricsFormatter::getPrettyMoney($revenuePrevWeek,$idSite,TRUE) . $icoBlank)
+                'margin' => alignRight( $this->oaCurrFormat($marginPrevWeek, $this) . $icoBlank),
+                'revenue' => alignRight( $this->oaCurrFormat($revenuePrevWeek, $this) . $icoBlank)
             ));
         
-        $tipMargin  = $this->oaTrendTip( $marginTrendWeek, MetricsFormatter::getPrettyMoney($marginForecastWeek,$idSite,TRUE), $this );
-        $tipRevenue = $this->oaTrendTip( $revenueTrendWeek, MetricsFormatter::getPrettyMoney($revenueForecastWeek,$idSite,TRUE), $this );
+        $tipMargin  = $this->oaTrendTip( $marginTrendWeek, $this->oaCurrFormat($marginForecastWeek, $this), $this );
+        $tipRevenue = $this->oaTrendTip( $revenueTrendWeek, $this->oaCurrFormat($revenueForecastWeek, $this), $this );
         $icoMarginTrend  = $this->oaTrendIcon( $marginForecastWeek, $marginPrevWeek );
         $icoRevenueTrend = $this->oaTrendIcon( $revenueForecastWeek, $revenuePrevWeek );
         array_push($dbData, array(
                 'num' => 6,
                 'period' => Piwik::translate('OxidAnalysis_ThisWeek'),
                 'count' => $countThisWeek,
-                'margin' => alignRight(addTitle( MetricsFormatter::getPrettyMoney($marginThisWeek,$idSite,TRUE), $tipMargin ) . $icoMarginTrend),
-                'revenue' => alignRight(addTitle( MetricsFormatter::getPrettyMoney($revenueThisWeek,$idSite,TRUE), $tipMargin ) . $icoRevenueTrend)
+                'margin' => alignRight(addTitle( $this->oaCurrFormat($marginThisWeek, $this), $tipMargin ) . $icoMarginTrend),
+                'revenue' => alignRight(addTitle( $this->oaCurrFormat($revenueThisWeek, $this), $tipMargin ) . $icoRevenueTrend)
             ));
         
         // -------- DAY ----------
@@ -1260,20 +1260,20 @@ class API extends \Piwik\Plugin\API
                 'num' => 7,
                 'period' => Piwik::translate('OxidAnalysis_Yesterday'),
                 'count' => $countYesterday,
-                'margin' => alignRight( MetricsFormatter::getPrettyMoney($marginYesterday,$idSite,TRUE) . $icoBlank ),
-                'revenue' => alignRight( MetricsFormatter::getPrettyMoney($revenueYesterday,$idSite,TRUE) . $icoBlank )
+                'margin' => alignRight( $this->oaCurrFormat($marginYesterday, $this) . $icoBlank ),
+                'revenue' => alignRight( $this->oaCurrFormat($revenueYesterday, $this) . $icoBlank )
             ));
         
-        $tipMargin  = $this->oaTrendTip( $marginTrendDay, MetricsFormatter::getPrettyMoney($marginForecastDay,$idSite,TRUE), $this );
-        $tipRevenue = $this->oaTrendTip( $revenueTrendDay, MetricsFormatter::getPrettyMoney($revenueForecastDay,$idSite,TRUE), $this );
+        $tipMargin  = $this->oaTrendTip( $marginTrendDay, $this->oaCurrFormat($marginForecastDay, $this), $this );
+        $tipRevenue = $this->oaTrendTip( $revenueTrendDay, $this->oaCurrFormat($revenueForecastDay, $this), $this );
         $icoMarginTrend  = $this->oaTrendIcon( $marginForecastDay, $marginYesterday );
         $icoRevenueTrend = $this->oaTrendIcon( $revenueForecastDay, $revenueYesterday );
         array_push($dbData, array(
                 'num' => 8,
                 'period' => Piwik::translate('OxidAnalysis_Today'),
                 'count' => $countToday,
-                'margin' => alignRight(addTitle( MetricsFormatter::getPrettyMoney($marginToday,$idSite,TRUE) . $icoMarginTrend, $tipMargin )),
-                'revenue' => alignRight(addTitle( MetricsFormatter::getPrettyMoney($revenueToday,$idSite,TRUE) . $icoRevenueTrend, $tipMargin ))
+                'margin' => alignRight(addTitle( $this->oaCurrFormat($marginToday, $this) . $icoMarginTrend, $tipMargin )),
+                'revenue' => alignRight(addTitle( $this->oaCurrFormat($revenueToday, $this) . $icoRevenueTrend, $tipMargin ))
             ));
         
         // -------- Prepare Data ----------
@@ -3732,7 +3732,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     function oaTrendTip ($valueTrend, $valueForecast, $conf)
     {
         return Piwik::translate('OxidAnalysis_Trend')    . sprintf(": %+d %% \n", $valueTrend)
-             . Piwik::translate('OxidAnalysis_Forecast') . sprintf(": %+1.2F %s", $valueForecast, $conf->Currency);
+             . Piwik::translate('OxidAnalysis_Forecast') . sprintf(": %+1.2F %s", $valueForecast, MetricsFormatter::getCurrencySymbol($conf->SiteID));
         
     }
     
@@ -3751,7 +3751,9 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     
     function oaCurrFormat($value, $conf)
     {
-        return ('<div style="text-align:right;">'.MetricsFormatter::getPrettyMoney($value,$conf->SiteID,TRUE).'</div>');
+        //return ('<div style="text-align:right;">'.MetricsFormatter::getPrettyMoney($value,$conf->SiteID,TRUE).'</div>');
+        return (''.sprintf("%1.2F %s", $value, MetricsFormatter::getCurrencySymbol($conf->SiteID)).'');
+        return ('<div style="text-align:right;">'.sprintf("%1.2F %s", $value, MetricsFormatter::getCurrencySymbol($conf->SiteID)).'</div>');
     }
 	
 }
