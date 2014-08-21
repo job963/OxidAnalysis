@@ -3676,45 +3676,14 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     
     function oaGetStartDate($date, $period)
     {
-        /*
-        if ($period != "range")
-            $date = Date::factory($date);
-            
-        switch ($period) {
-            case "day":
-                return $date;
-                break;
-
-            case "range":
-                return substr($date, 0, strpos($date, ',')); 
-                break;
-            
-            case "week":
-                $tDate = strtotime($date);
-                $diff = intval(date("N",$tDate)) - 1;
-                return date( "Y-m-d", strtotime( "$date -$diff day" ) );
-                break;
-            
-            case "month":
-                $tDate = strtotime($date);
-                return date( "Y-m-d", strtotime( "first day of this month", $tDate ) );
-                break;
-            
-            case "year":
-                $tDate = strtotime($date);
-                if ($this->DebugMode) logfile('debug', 'oaGetStartDate: date='.date( "Y-m-d",$tDate));
-                $piwikDate = Date::factory($date);
-		$date      = Period\Factory::build($period, $piwikDate);
-                if ($this->DebugMode) logfile('debug', 'oaGetStartDate: **date='.$date->getDateStart()->toString());
-                
-                return date( "Y-m-d", strtotime( "first day of this year", $tDate ) );
-                break;
+        if ($period == "range") {
+            return substr($date, 0, strpos($date, ',')); 
+        } 
+        else {
+            $piwikDate = Date::factory($date);
+            $date = Period\Factory::build($period, $piwikDate);
+            return $date->getDateStart()->toString();
         }
-        */
-        
-        $piwikDate = Date::factory($date);
-        $date      = Period\Factory::build($period, $piwikDate);
-        return $date->getDateStart()->toString();
 
         return;
     }
@@ -3723,40 +3692,14 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     
     function oaGetEndDate($date, $period)
     {
-        /*
-        if ($period != "range")
-            $date = Date::factory($date);
-            
-        switch ($period) {
-            case "day":
-                return $date;
-                break;
-            
-            case "range":
-                return substr($date, strpos($date, ',')+1);  
-                break;
-            
-            case "week":
-                $tDate = strtotime($date);
-                $diff = 7 - intval(date("N",$tDate));
-                return date( "Y-m-d", strtotime( "$date +$diff day" ) );
-                break;
-            
-            case "month":
-                $tDate = strtotime($date);
-                return date( "Y-m-d", strtotime( "last day of this month", $tDate ) );
-                break;
-            
-            case "year":
-                $tDate = strtotime($date);
-                return date( "Y-m-d", strtotime( "last day of this year", $tDate ) );
-                break;
+        if ($period == "range") {
+            return substr($date, strpos($date, ',')+1);
+        } 
+        else {
+            $piwikDate = Date::factory($date);
+            $date = Period\Factory::build($period, $piwikDate);
+            return $date->getDateEnd()->toString();
         }
-        */
-        
-        $piwikDate = Date::factory($date);
-        $date      = Period\Factory::build($period, $piwikDate);
-        return $date->getDateEnd()->toString();
 
         return ;
     }
