@@ -901,11 +901,11 @@ class Controller extends \Piwik\Plugin\Controller
 	
 	
     /**
-     * Full page report which loads the table with all not paid COD orders
+     * Full page report which loads the table with all not received COD orders
      **/
     function reportCODnotReceived()
     {
-        $output = '<h2>' . Piwik::translate('OxidAnalysis_CIAnotPaidTitle') . '</h2>';
+        $output = '<h2>' . Piwik::translate('OxidAnalysis_CODnotReceivedTitle') . '</h2>';
         $output .= '<div style="height:12px;"></div>';
         $output .= $this->tableCODnotReceived();
         
