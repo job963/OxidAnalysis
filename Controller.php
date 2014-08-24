@@ -1345,16 +1345,25 @@ class Controller extends \Piwik\Plugin\Controller
     }
 	
 	
-	function oxidMenuManufacturerRevenue()
-	{
+    function oxidMenuManufacturerRevenue()
+    {
 
-            echo '<table width="100%">';
-            echo '<tr><td colspan="2">';
+        $output = '<h2>' . Piwik::translate('OxidAnalysis_ManufacturerRevenueTitle') . '</h2>';
+        $output .= '<div style="height:12px;"></div>';
+        $output .= '<table width="100%">';
+        $output .= '<tr><td colspan="2">';
                 // $this->echoTop5DelivererRevenueGraph();
-            echo '</td></tr>';
-            echo '<tr><td style="vertical-align: top;"><p> </p>';
+        $output .= '</td></tr>';
+        $output .= '<tr><td style="vertical-align:top;" width="50%"><p> </p>';
 		// $this->echoManuRevenueGraph();
-            echo '</td><td style="vertical-align: top;"><p></p><p>';
+        $output .= '</td><td style="vertical-align:top;" width="50%"><p></p><p>';
+        $output .= $this->tableTopManufacturerRevenue();
+        $output .= '</td>';
+        $output .= '</tr>';
+        $output .= '</table>';
+        
+        return $output;
+        /*
 		$view = Piwik_ViewDataTable::factory('table');
 		$view->init( $this->pluginName,  __FUNCTION__, 'OxidPlugin.getManufacturerRevenue' );
 
@@ -1387,11 +1396,40 @@ class Controller extends \Piwik\Plugin\Controller
 		$view->disableSearchBox();
                 $view->disableRowEvolution();
 		$this->renderView($view);
-            echo '</td></tr>';/*--*/
-            echo '</table>';
 
             return;
-	}
+         */
+    }
+    
+    
+    function tableTopManufacturerRevenue()
+    {
+        $controllerAction = $this->pluginName . '.' . __FUNCTION__;
+        $apiAction = 'OxidAnalysis.getManufacturerRevenue';
+
+        $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
+
+        $view->config->columns_to_display = array('deliverer', 'totalcount', 'netmargin', 'percentnet', 'brutsum', 'percentbrut');
+        $view->config->translations['deliverer'] = Piwik::translate('OxidAnalysis_Manufacturer');
+        $view->config->translations['totalcount'] = Piwik::translate('OxidAnalysis_Count');
+        $view->config->translations['netmargin'] = Piwik::translate('OxidAnalysis_Margin');
+        $view->config->translations['percentnet'] = Piwik::translate('OxidAnalysis_Percentage');
+        $view->config->translations['brutsum'] = Piwik::translate('OxidAnalysis_Revenue');
+        $view->config->translations['percentbrut'] = Piwik::translate('OxidAnalysis_Percentage');
+        $view->requestConfig->filter_sort_column = 'brutsum';
+        $view->requestConfig->filter_sort_order = 'desc';
+        $view->config->disable_row_evolution  = true;
+        $view->config->show_search = false;
+		
+        $view->requestConfig->filter_limit = 25;
+        $view->config->show_exclude_low_population = false;
+        $view->config->show_table_all_columns = false;
+        $view->config->show_all_views_icons = false;
+        $view->config->disable_row_evolution  = true;
+
+        return $view->render();
+        
+    }
 	
 	
 	function oxidMenuVendorRevenue()

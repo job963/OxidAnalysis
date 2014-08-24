@@ -2584,44 +2584,53 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
 
 
     // Retrieving the Sum and Count per Manufacturer  
-    public function getManufacturerRevenue($date, $period)
+    public function getManufacturerRevenue($idSite, $period, $date)
     {
-        return $this->getDelivererRevenue('oxmanufacturer');
+        return $this->getDelivererRevenue($idSite, $period, $date, 'oxmanufacturer');
     }
 
 
     // Retrieving the Sum per Manufacturer for  Bar Chart Display  
-    public function getManufacturerRevenueGraph($date, $period)
+    public function getManufacturerRevenueGraph($idSite, $period, $date)
     {
-        return $this->getDelivererRevenueGraph('oxmanufacturer');
+        return $this->getDelivererRevenueGraph($idSite, $period, $date, 'oxmanufacturer');
     }
 
 
     // Retrieving the Sum and Count per Vendor  
-    public function getVendorRevenue($date, $period)
+    public function getVendorRevenue($idSite, $period, $date)
     {
-        return $this->getDelivererRevenue('oxvendor');
+        return $this->getDelivererRevenue($idSite, $period, $date, 'oxvendor');
     }
 
 
     // Retrieving the Sum per Vendor for  Bar Chart Display  
-    public function getVendorRevenueGraph($date, $period)
+    public function getVendorRevenueGraph($idSite, $period, $date)
     {
-            return $this->getDelivererRevenueGraph('oxvendor');
+            return $this->getDelivererRevenueGraph($idSite, $period, $date, 'oxvendor');
     }
 
 
     // Retrieving the Sum and Count per Deliverer (Manufacturer or Vendor)  
-    public function getDelivererRevenue($delivererType)
+    public function getDelivererRevenue($idSite, $period, $date, $delivererType)
     {
-            include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
+        include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
+        $site = new Site($idSite);
+        $this->SiteID = $idSite;
+        $this->Currency = $site->getCurrency();
+        
+        $dateStart = $this->oaGetStartDate($date,$period);
+        $dateEnd = $this->oaGetEndDate($date,$period);
+        if ($this->DebugMode) logfile ('debug', " ========================= getDelivererRevenue ====================");
 
+            /*
             $this->SiteID = Piwik_Common::getRequestVar('idSite');
             $db = openDB($this);
 
             $date = Piwik_Common::getRequestVar('date');
             $period = Piwik_Common::getRequestVar('period');
             $this->Currency = Piwik::getCurrency(Piwik_Common::getRequestVar('idSite'));
+            */
 
             // works wrong for period=range: $period = Piwik_Common::getRequestVar('period');
             // Work around for the this bug
@@ -2629,7 +2638,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
             if (strpos($date, ',') > 0)
                     $period = 'range';*/
 
-            if ($period == 'range') {
+            /*if ($period == 'range') {
                     $dateStart = substr($date, 0, strpos($date, ',')); 
                     $dateEnd = substr($date, strpos($date, ',')+1);  
             } else {
@@ -2637,66 +2646,69 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
                     $requestedPeriod = Piwik_Period::factory($period, $requestedDate);
                     $dateStart = $requestedPeriod->getDateStart()->toString('Y-m-d'); 
                     $dateEnd = $requestedPeriod->getDateEnd()->toString('Y-m-d');   
-            }
+            }*/
 
-            if ($delivererType == 'oxmanufacturer') {
-                    $delivererid = 'oxmanufacturerid';
-                    $delivererTable = 'oxmanufacturers';
-            }
-            else {
-                    $delivererid = 'oxvendorid';
-                    $delivererTable = 'oxvendor';
-            }
+        if ($delivererType == 'oxmanufacturer') {
+            $delivererid = 'oxmanufacturerid';
+            $delivererTable = 'oxmanufacturers';
+        }
+        else {
+            $delivererid = 'oxvendorid';
+            $delivererTable = 'oxvendor';
+        }
 
-            $sql = 'SELECT oxid, oxtitle FROM ' . $delivererTable . ' '
-                 . 'WHERE oxshopid = ' . $this->ShopID[$this->SiteID] . ' '
-                 . 'ORDER BY oxtitle ASC';
-            $result = $db->prepare($sql);
-            $result->execute();
-            $Deliverers = $result->fetchAll(PDO::FETCH_NAMED);
-            if ($this->DebugMode) logfile('debug', $sql);
-            if ($this->DebugMode) logfile('debug', $Deliverers);
+        $sql = "SELECT oxid, oxtitle FROM {$delivererTable} "
+             . "WHERE oxshopid = {$this->ShopID[$this->SiteID]} "
+             . "ORDER BY oxtitle ASC ";
+        $db = openDB($this);
+        $Deliverers = $this->oaQuery($db, $sql, 'getDelivererRevenue');
+            //$result = $db->prepare($sql);
+            //$result->execute();
+            //$Deliverers = $result->fetchAll(PDO::FETCH_NAMED);
+        if ($this->DebugMode) logfile('debug', $sql);
+        if ($this->DebugMode) logfile('debug', $Deliverers);
 
-            switch ($period) {
+        switch ($period) {
 
-                case 'day':
-                    $whereTime = 'date(o.oxorderdate) = \''. $dateStart.'\' ';
-                    break;
+            case 'day':
+                $whereTime = "date(o.oxorderdate) = '{$dateStart}' ";
+                break;
 
-                case 'range':
-                case 'week':
-                case 'month':
-                case 'year':
-                    $whereTime = 'date(o.oxorderdate) >= \''. $dateStart.'\' AND  date(o.oxorderdate) <= \''. $dateEnd.'\' ';
-                    break;
+            case 'range':
+            case 'week':
+            case 'month':
+            case 'year':
+                $whereTime = "date(o.oxorderdate) >= '{$dateStart}' AND  date(o.oxorderdate) <= '{$dateEnd}' ";
+                break;
 
-            }
+        }
 
-            $dbData = array();
-            $i = 0;
-            $totalbrutsum = 0.001; //avoid div0 when total revenue is zero
-            $totalnetmargin = 0.001; //avoid div0 when total revenue is zero
-            foreach ($Deliverers as $deliverer) {
+        $dbData = array();
+        $i = 0;
+        $totalbrutsum = 0.001; //avoid div0 when total revenue is zero
+        $totalnetmargin = 0.001; //avoid div0 when total revenue is zero
+        foreach ($Deliverers as $deliverer) {
 
-                    $sql = 'SELECT \''.$deliverer['oxtitle'].'\', SUM(d.oxamount) AS totalcount, '
-                                . '(SUM(d.oxnetprice) - '
-                                    . 'SUM(d.oxamount * a.oxbprice)'
-                                . ') AS netmargin, '
-                                . 'SUM(d.oxamount*d.oxprice) AS brutpricesum '
-                            . 'FROM oxarticles a, oxorder o, oxorderarticles d '
-                            . 'WHERE '
-                                . 'a.oxid = d.oxartid '
-                                . 'AND o.oxid = d.oxorderid '
-                                . 'AND a.'.$delivererid.'=\''.$deliverer['oxid'].'\''
-                                . 'AND o.oxstorno = 0 '
-                                . 'AND d.oxstorno = 0 '
-                                . 'AND a.oxparentid = \'\' '
-                                . 'AND o.oxshopid = ' . $this->ShopID[$this->SiteID] . ' '
-                                . 'AND '.$whereTime.' ';
+            $sql = "SELECT '{$deliverer['oxtitle']}', SUM(d.oxamount) AS totalcount, "
+                        . "(SUM(d.oxnetprice) - "
+                            . "SUM(d.oxamount * a.oxbprice)"
+                        . ") AS netmargin, "
+                        . "SUM(d.oxamount*d.oxprice) AS brutpricesum "
+                    . "FROM oxarticles a, oxorder o, oxorderarticles d "
+                    . "WHERE "
+                        . "a.oxid = d.oxartid "
+                        . "AND o.oxid = d.oxorderid "
+                        . "AND a.".$delivererid.'=\''.$deliverer['oxid'].'\''
+                        . "AND o.oxstorno = 0 "
+                        . "AND d.oxstorno = 0 "
+                        . "AND a.oxparentid = '' "
+                        . "AND o.oxshopid = {$this->ShopID[$this->SiteID]} "
+                            . "AND {$whereTime} ";
 
-                    $result = $db->prepare($sql);
-                    $result->execute();
-                    $dbSingleVal = $result->fetchAll(PDO::FETCH_NAMED);
+        $dbSingleVal = $this->oaQuery($db, $sql, 'getDelivererRevenue');
+                    //$result = $db->prepare($sql);
+                    //$result->execute();
+                    //$dbSingleVal = $result->fetchAll(PDO::FETCH_NAMED);
                     if ($this->DebugMode) logfile('debug', $deliverer['oxtitle']);
                     if ($this->DebugMode) logfile('debug', $sql);
                     if ($this->DebugMode) logfile('debug', $dbSingleVal);
@@ -2718,41 +2730,41 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
 
                     // Variants of articles 
                     /*******/
-                    $sql = 'SELECT '
-                                . '(SELECT b.'.$delivererid.' FROM oxarticles b WHERE  a.oxparentid = b.oxid) AS delivererid, ' 
-                                . 'SUM(d.oxamount) AS totalcount, ' 
-                                . '(SUM(d.oxnetprice) - '
-                                . 'SUM(d.oxamount * '
-                                    . 'IF(a.oxbprice=0.0,'
-                                        . '(SELECT a2.oxbprice FROM oxarticles a2 WHERE a2.oxid = a.oxparentid),'
-                                        . 'a.oxbprice))'
-                                . ') AS netmargin, '
-                                . 'SUM(d.oxbrutprice) AS brutpricesum ' 
-                             . 'FROM '
-                                . 'oxorderarticles d, oxorder o, oxarticles a '
-                             . 'WHERE '
-                                . 'o.oxid = d.oxorderid '
-                                . 'AND d.oxartid = a.oxid '
-                                . 'AND a.oxparentid != \'\' '
-                                . 'AND o.oxshopid = ' . $this->ShopID[$this->SiteID] . ' '
-                                . 'AND '.$whereTime.' ' 
-                                . 'AND o.oxstorno = 0 ' 
-                                . 'AND d.oxstorno = 0 ' 
-                                . 'AND (SELECT b.'.$delivererid.' FROM oxarticles b ' 
-                                        . 'WHERE  a.oxparentid = b.oxid ' 
-                                        . 'AND b.'.$delivererid.' = \''.$deliverer['oxid'].'\') = '
-                                        . '\''.$deliverer['oxid'].'\' '
-                            . 'GROUP BY (SELECT b.'.$delivererid.' FROM oxarticles b '
-                                    . 'WHERE  a.oxparentid = b.oxid) '
-                            . 'ORDER BY (SELECT b.'.$delivererid.' FROM oxarticles b '
-                                    . 'WHERE  a.oxparentid = b.oxid) ';
+                    $sql = "SELECT "
+                                . "(SELECT b.{$delivererid} FROM oxarticles b WHERE  a.oxparentid = b.oxid) AS delivererid, " 
+                                . "SUM(d.oxamount) AS totalcount, " 
+                                . "(SUM(d.oxnetprice) - "
+                                . "SUM(d.oxamount * "
+                                    . "IF(a.oxbprice=0.0,"
+                                        . "(SELECT a2.oxbprice FROM oxarticles a2 WHERE a2.oxid = a.oxparentid),"
+                                        . "a.oxbprice))"
+                                . ") AS netmargin, "
+                                . "SUM(d.oxbrutprice) AS brutpricesum " 
+                             . "FROM "
+                                . "oxorderarticles d, oxorder o, oxarticles a "
+                             . "WHERE "
+                                . "o.oxid = d.oxorderid "
+                                . "AND d.oxartid = a.oxid "
+                                . "AND a.oxparentid != '' "
+                                . "AND o.oxshopid = {$this->ShopID[$this->SiteID]} "
+                                . "AND {$whereTime} " 
+                                . "AND o.oxstorno = 0 " 
+                                . "AND d.oxstorno = 0 " 
+                                . "AND (SELECT b.{$delivererid} FROM oxarticles b " 
+                                    . "WHERE  a.oxparentid = b.oxid " 
+                                    . "AND b.{$delivererid} = '{$deliverer['oxid']}') = '{$deliverer['oxid']}' "
+                            . "GROUP BY (SELECT b.{$delivererid} FROM oxarticles b "
+                                . "WHERE  a.oxparentid = b.oxid) "
+                            . "ORDER BY (SELECT b.{$delivererid} FROM oxarticles b "
+                                . "WHERE  a.oxparentid = b.oxid) ";
                             //. 'ORDER BY '.$delivererid.' ';
-                    $result = $db->prepare($sql);
-                    $result->execute();
-                    $dbSingleVal = $result->fetchAll(PDO::FETCH_NAMED);
+        $dbSingleVal = $this->oaQuery($db, $sql, 'getDelivererRevenue');
+                    //$result = $db->prepare($sql);
+                    //$result->execute();
+                    //$dbSingleVal = $result->fetchAll(PDO::FETCH_NAMED);
                     if ($this->DebugMode) logfile ('debug', $sql);
                     if ($this->DebugMode) logfile ('debug', $dbSingleVal);
-                    if ($this->DebugMode) logfile ('debug', $result->rowCount());
+                    //if ($this->DebugMode) logfile ('debug', $result->rowCount());
                     $dbData[$i]['deliverer'] = $deliverer['oxtitle'];
                     if (!empty($dbSingleVal[0]['brutpricesum'])) {
                             $dbData[$i]['totalcount'] += $dbSingleVal[0]['totalcount'];
@@ -2785,13 +2797,17 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
                     $dbData[$i]['brutsum'] = $this->oaCurrFormat($dbData[$i]['brutsum'], $this);
             }
 
-            $dataTable = new Piwik_DataTable();
+            //$dataTable = new Piwik_DataTable();
             // convert this array to a DataTable object
-            $dataTable->addRowsFromArrayWithIndexLabel($dbData);
+            //$dataTable->addRowsFromArrayWithIndexLabel($dbData);
 
-            $db = null;
+        $db = null;
+            
+        // convert this array to a DataTable object
+        $dataTable = new DataTable();
+        $dataTable = DataTable::makeFromIndexedArray($dbData);
 
-            return $dataTable;
+        return $dataTable;
     }
 
 
