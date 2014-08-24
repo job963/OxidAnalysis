@@ -1350,10 +1350,10 @@ class Controller extends \Piwik\Plugin\Controller
 
             echo '<table width="100%">';
             echo '<tr><td colspan="2">';
-                $this->echoTop5DelivererRevenueGraph();
+                // $this->echoTop5DelivererRevenueGraph();
             echo '</td></tr>';
             echo '<tr><td style="vertical-align: top;"><p> </p>';
-		$this->echoManuRevenueGraph();
+		// $this->echoManuRevenueGraph();
             echo '</td><td style="vertical-align: top;"><p></p><p>';
 		$view = Piwik_ViewDataTable::factory('table');
 		$view->init( $this->pluginName,  __FUNCTION__, 'OxidPlugin.getManufacturerRevenue' );

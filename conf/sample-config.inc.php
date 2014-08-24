@@ -10,7 +10,8 @@ $this->FirstDayOfWeek = "Monday";
 
 $this->ActivePaymentsOnly = FALSE;
 
-$this->DecimalSeparator = ",";
+$this->DecimalPoint = ",";
+$this->ThousandsSep = ".";
 $this->MaxBarChartColumns = 15;
 $this->SiteID = 0;
 

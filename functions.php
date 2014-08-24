@@ -182,7 +182,7 @@ function currFormat($value, $conf)
 {
         if (empty($conf->Style)) $conf->Style = '';
         return '<div style="text-align:right;'.$conf->Style.'">' 
-                . number_format($value, 2, $conf->DecimalSeparator, '') 
+                . number_format($value, 2, $conf->DecimalPoint, $conf->ThousandsSep) 
                 . '&nbsp;' . htmlentities($conf->Currency, ENT_QUOTES, "UTF-8") . '&nbsp;'
                 . '</div>';
 }
@@ -204,7 +204,7 @@ function percFormat($value, $conf)
 {
         if (empty($conf->Style)) $conf->Style = '';
         return '<div style="text-align:right;'.$conf->Style.'">' 
-                . number_format($value, 1, $conf->DecimalSeparator, '') 
+                . number_format($value, 1, $conf->DecimalPoint, '') 
                 . '&nbsp;' . '%' . '&nbsp;' 
                 . '</div>';
 }
@@ -230,7 +230,7 @@ function showGray($value, $conf)
 }
 
 
-// Align the string in the cell to the right
+// Align the text in the cell to the right
 function alignRight($value)
 {
     return '<div style="text-align:right;">' 
