@@ -37,11 +37,11 @@ class Controller extends \Piwik\Plugin\Controller
 
         $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
 	
-        $view->config->columns_to_display = array('period', 'count', 'margin', 'revenue');
+        $view->config->columns_to_display = array('period', 'count', 'margin', 'revenue23');
         $view->config->translations['period'] = Piwik::translate('OxidAnalysis_Period');
         $view->config->translations['count'] = Piwik::translate('OxidAnalysis_Count');
         $view->config->translations['margin'] = Piwik::translate('OxidAnalysis_Margin');
-        $view->config->translations['revenue'] = Piwik::translate('OxidAnalysis_Revenue');
+        $view->config->translations['revenue23'] = Piwik::translate('OxidAnalysis_Revenue');
 
         $view->requestConfig->filter_sort_column = 'num';
         $view->requestConfig->filter_sort_order = 'asc';
@@ -1118,10 +1118,10 @@ class Controller extends \Piwik\Plugin\Controller
 
         $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
 
-	$view->config->columns_to_display = array('daytime', 'revenue', 'revshare', 'cancel', 'cancshare', 'cancpercent');
+	$view->config->columns_to_display = array('daytime', 'revenue23', 'revshare', 'cancel', 'cancshare', 'cancpercent');
 		
         $view->config->translations['daytime'] = Piwik::translate('OxidAnalysis_Time');
-        $view->config->translations['revenue'] = Piwik::translate('OxidAnalysis_Revenue');
+        $view->config->translations['revenue23'] = Piwik::translate('OxidAnalysis_Revenue');
         $view->config->translations['revshare'] = Piwik::translate('OxidAnalysis_Percentage');
         $view->config->translations['cancel'] = Piwik::translate('OxidAnalysis_Storno');
         $view->config->translations['cancshare'] = Piwik::translate('OxidAnalysis_Percentage');
@@ -1149,10 +1149,10 @@ class Controller extends \Piwik\Plugin\Controller
 
         $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
 
-	$view->config->columns_to_display = array('dayname', 'revenue', 'revshare', 'cancel', 'cancshare', 'cancpercent');
+	$view->config->columns_to_display = array('dayname', 'revenue23', 'revshare', 'cancel', 'cancshare', 'cancpercent');
 
         $view->config->translations['dayname'] = Piwik::translate('OxidAnalysis_Weekday');
-        $view->config->translations['revenue'] = Piwik::translate('OxidAnalysis_Revenue');
+        $view->config->translations['revenue23'] = Piwik::translate('OxidAnalysis_Revenue');
         $view->config->translations['revshare'] = Piwik::translate('OxidAnalysis_Percentage');
         $view->config->translations['cancel'] = Piwik::translate('OxidAnalysis_Storno');
         $view->config->translations['cancshare'] = Piwik::translate('OxidAnalysis_Percentage');

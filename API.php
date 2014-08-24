@@ -1198,7 +1198,7 @@ class API extends \Piwik\Plugin\API
                 'period'  => Piwik::translate('OxidAnalysis_PrevYear'),
                 'count'   => $countPrevYear,
                 'margin'  => alignRight( $this->oaCurrFormat($marginPrevYear, $this, false) . $icoBlank),
-                'revenue' => alignRight( $this->oaCurrFormat($revenuePrevYear, $this, false) . $icoBlank)
+                'revenue23' => alignRight( $this->oaCurrFormat($revenuePrevYear, $this, false) . $icoBlank)
             ));
         
         $tipMargin  = $this->oaTrendTip( $this->oaCurrFormat($marginTrendYear, $this), $marginForecastYear, $this );
@@ -1210,7 +1210,7 @@ class API extends \Piwik\Plugin\API
                 'period'  => Piwik::translate('OxidAnalysis_ThisYear'),
                 'count'   => $countThisYear,
                 'margin'  => alignRight(addTitle( $this->oaCurrFormat($marginThisYear, $this, false), $tipMargin ).$icoMarginTrend),
-                'revenue' => alignRight(addTitle( $this->oaCurrFormat($revenueThisYear, $this, false), $tipRevenue ).$icoRevenueTrend)
+                'revenue23' => alignRight(addTitle( $this->oaCurrFormat($revenueThisYear, $this, false), $tipRevenue ).$icoRevenueTrend)
             ));
         
         // -------- MONTH ----------
@@ -1219,7 +1219,7 @@ class API extends \Piwik\Plugin\API
                 'period' => Piwik::translate('OxidAnalysis_PrevMonth'),
                 'count' => $countPrevMonth,
                 'margin' => alignRight( $this->oaCurrFormat($marginPrevMonth, $this, false) . $icoBlank),
-                'revenue' => alignRight( $this->oaCurrFormat($revenuePrevMonth, $this, false) . $icoBlank)
+                'revenue23' => alignRight( $this->oaCurrFormat($revenuePrevMonth, $this, false) . $icoBlank)
             ));
         
         $tipMargin  = $this->oaTrendTip( $marginTrendMonth, $this->oaCurrFormat($marginForecastMonth, $this) , $this );
@@ -1231,7 +1231,7 @@ class API extends \Piwik\Plugin\API
                 'period' => Piwik::translate('OxidAnalysis_ThisMonth'),
                 'count' => $countThisMonth,
                 'margin' => alignRight(addTitle( $this->oaCurrFormat($marginThisMonth, $this, false), $tipMargin ).$icoMarginTrend),
-                'revenue' => alignRight(addTitle( $this->oaCurrFormat($revenueThisMonth, $this, false), $tipMargin ).$icoRevenueTrend)
+                'revenue23' => alignRight(addTitle( $this->oaCurrFormat($revenueThisMonth, $this, false), $tipMargin ).$icoRevenueTrend)
             ));
 
         // -------- WEEK ----------
@@ -1240,7 +1240,7 @@ class API extends \Piwik\Plugin\API
                 'period' => Piwik::translate('OxidAnalysis_PrevWeek'),
                 'count' => $countPrevWeek,
                 'margin' => alignRight( $this->oaCurrFormat($marginPrevWeek, $this, false) . $icoBlank),
-                'revenue' => alignRight( $this->oaCurrFormat($revenuePrevWeek, $this, false) . $icoBlank)
+                'revenue23' => alignRight( $this->oaCurrFormat($revenuePrevWeek, $this, false) . $icoBlank)
             ));
         
         $tipMargin  = $this->oaTrendTip( $marginTrendWeek, $this->oaCurrFormat($marginForecastWeek, $this), $this );
@@ -1252,7 +1252,7 @@ class API extends \Piwik\Plugin\API
                 'period' => Piwik::translate('OxidAnalysis_ThisWeek'),
                 'count' => $countThisWeek,
                 'margin' => alignRight(addTitle( $this->oaCurrFormat($marginThisWeek, $this, false), $tipMargin ) . $icoMarginTrend),
-                'revenue' => alignRight(addTitle( $this->oaCurrFormat($revenueThisWeek, $this, false), $tipMargin ) . $icoRevenueTrend)
+                'revenue23' => alignRight(addTitle( $this->oaCurrFormat($revenueThisWeek, $this, false), $tipMargin ) . $icoRevenueTrend)
             ));
         
         // -------- DAY ----------
@@ -1261,7 +1261,7 @@ class API extends \Piwik\Plugin\API
                 'period' => Piwik::translate('OxidAnalysis_Yesterday'),
                 'count' => $countYesterday,
                 'margin' => alignRight( $this->oaCurrFormat($marginYesterday, $this, false) . $icoBlank ),
-                'revenue' => alignRight( $this->oaCurrFormat($revenueYesterday, $this, false) . $icoBlank )
+                'revenue23' => alignRight( $this->oaCurrFormat($revenueYesterday, $this, false) . $icoBlank )
             ));
         
         $tipMargin  = $this->oaTrendTip( $marginTrendDay, $this->oaCurrFormat($marginForecastDay, $this), $this );
@@ -1273,7 +1273,7 @@ class API extends \Piwik\Plugin\API
                 'period' => Piwik::translate('OxidAnalysis_Today'),
                 'count' => $countToday,
                 'margin' => alignRight(addTitle( $this->oaCurrFormat($marginToday, $this, false) . $icoMarginTrend, $tipMargin )),
-                'revenue' => alignRight(addTitle( $this->oaCurrFormat($revenueToday, $this, false) . $icoRevenueTrend, $tipMargin ))
+                'revenue23' => alignRight(addTitle( $this->oaCurrFormat($revenueToday, $this, false) . $icoRevenueTrend, $tipMargin ))
             ));
         
         // -------- Prepare Data ----------
@@ -2254,7 +2254,7 @@ class API extends \Piwik\Plugin\API
 
         }
 
-        $sql = "SELECT SUM(IF(d.oxstorno=0,d.oxbrutprice,0)) AS revenue,  SUM(IF(d.oxstorno=1,d.oxbrutprice,0)) AS cancel "
+        $sql = "SELECT SUM(IF(d.oxstorno=0,d.oxbrutprice,0)) AS revenue23,  SUM(IF(d.oxstorno=1,d.oxbrutprice,0)) AS cancel "
                 . "FROM oxorderarticles d, oxorder o "
                 . "WHERE o.oxid = d.oxorderid "
                     . "AND o.oxshopid = {$this->ShopID[$this->SiteID]} "
@@ -2277,14 +2277,14 @@ class API extends \Piwik\Plugin\API
             die();
         }
         if ($this->DebugMode) logfile('debug', $dbData);
-        $totalRevenue = $dbData[0]['revenue'];
+        $totalRevenue = $dbData[0]['revenue23'];
         $totalCancel = $dbData[0]['cancel'];
         if ($this->DebugMode) logfile('debug', 'getTimeAnalysis: totalRevenue='.$totalRevenue);
         if ($this->DebugMode) logfile('debug', 'getTimeAnalysis: totalCancel='.$totalCancel);
 
         if ($timeType == 'weekday') {
             $sql = "SELECT DAYNAME(o.oxorderdate) AS dayname, WEEKDAY(o.oxorderdate) AS inum, "
-                 . "SUM(IF(d.oxstorno=0,d.oxbrutprice,0)) AS revenue,  SUM(IF(d.oxstorno=1,d.oxbrutprice,0)) AS cancel, "
+                 . "SUM(IF(d.oxstorno=0,d.oxbrutprice,0)) AS revenue23,  SUM(IF(d.oxstorno=1,d.oxbrutprice,0)) AS cancel, "
                  . "SUM(IF(d.oxstorno=0,d.oxbrutprice,0))/{$totalRevenue}*100.0 AS revshare,  SUM(IF(d.oxstorno=1,d.oxbrutprice,0))/{$totalCancel}*100.0 AS cancshare, "
                  . "SUM(IF(d.oxstorno=1,d.oxbrutprice,0))/SUM(IF(d.oxstorno=0,d.oxbrutprice,0))*100.0 AS cancpercent "
                  . "FROM oxorderarticles d, oxorder o "
@@ -2295,7 +2295,7 @@ class API extends \Piwik\Plugin\API
                  . "ORDER BY WEEKDAY(o.oxorderdate) ";
         } else {
             $sql = "SELECT TIME_FORMAT(o.oxorderdate, '%H:00') as daytime, TIME_FORMAT(o.oxorderdate, '%k') as inum, "
-                 . "SUM(IF(d.oxstorno=0,d.oxbrutprice,0)) AS revenue,  SUM(IF(d.oxstorno=1,d.oxbrutprice,0)) AS cancel, "
+                 . "SUM(IF(d.oxstorno=0,d.oxbrutprice,0)) AS revenue23,  SUM(IF(d.oxstorno=1,d.oxbrutprice,0)) AS cancel, "
                  . "SUM(IF(d.oxstorno=0,d.oxbrutprice,0))/{$totalRevenue}*100.0 AS revshare,  SUM(IF(d.oxstorno=1,d.oxbrutprice,0))/{$totalCancel}*100.0 AS cancshare, "
                  . "SUM(IF(d.oxstorno=1,d.oxbrutprice,0))/SUM(IF(d.oxstorno=0,d.oxbrutprice,0))*100.0 AS cancpercent "
                  . "FROM oxorderarticles d, oxorder o "
@@ -2325,9 +2325,9 @@ class API extends \Piwik\Plugin\API
 
         $i = 0;
         foreach ($dbData as $value) {
-            if (($dbData[$i]['revenue']==0.0) && ($dbData[$i]['cancel']!=0.0))
+            if (($dbData[$i]['revenue23']==0.0) && ($dbData[$i]['cancel']!=0.0))
                 $dbData[$i]['cancpercent'] = 100.0;
-            $dbData[$i]['revenue'] = $this->oaCurrFormat($dbData[$i]['revenue'], $this);
+            $dbData[$i]['revenue23'] = $this->oaCurrFormat($dbData[$i]['revenue23'], $this);
             $dbData[$i]['cancel'] = $this->oaCurrFormat($dbData[$i]['cancel'], $this);
             $dbData[$i]['revshare'] = percFormat($dbData[$i]['revshare'], $this);
             $dbData[$i]['cancshare'] = percFormat($dbData[$i]['cancshare'], $this);
@@ -2352,7 +2352,7 @@ class API extends \Piwik\Plugin\API
                 array_push($dbData, array(
                     'inum' => 0,
                     'dayname' => $weekdays[0], 
-                    'revenue' => $this->oaCurrFormat(0.0, $this), 
+                    'revenue23' => $this->oaCurrFormat(0.0, $this), 
                     'revshare' => percFormat(0.0, $this), 
                     'cancel' => $this->oaCurrFormat(0.0, $this), 
                     'cancshare' => percFormat(0.0, $this),  
@@ -2363,7 +2363,7 @@ class API extends \Piwik\Plugin\API
                     array_push($dbData, array(
                         'inum' => $i,
                         'dayname' => $weekdays[$i], 
-                        'revenue' => $this->oaCurrFormat(0.0, $this), 
+                        'revenue23' => $this->oaCurrFormat(0.0, $this), 
                         'revshare' => percFormat(0.0, $this), 
                         'cancel' => $this->oaCurrFormat(0.0, $this), 
                         'cancshare' => percFormat(0.0, $this),  
@@ -2381,7 +2381,7 @@ class API extends \Piwik\Plugin\API
                 array_push($dbData, array(
                     'inum' => $i,
                     'daytime' => str_pad(0, 2, '0', STR_PAD_LEFT).':00', 
-                    'revenue' => $this->oaCurrFormat(0.0, $this), 
+                    'revenue23' => $this->oaCurrFormat(0.0, $this), 
                     'revshare' => percFormat(0.0, $this), 
                     'cancel' => $this->oaCurrFormat(0.0, $this), 
                     'cancshare' => percFormat(0.0, $this),  
@@ -2393,7 +2393,7 @@ class API extends \Piwik\Plugin\API
                     array_push($dbData, array(
                         'inum' => $i,
                         'daytime' => str_pad($i, 2, '0', STR_PAD_LEFT).':00', 
-                        'revenue' => $this->oaCurrFormat(0.0, $this), 
+                        'revenue23' => $this->oaCurrFormat(0.0, $this), 
                         'revshare' => percFormat(0.0, $this), 
                         'cancel' => $this->oaCurrFormat(0.0, $this), 
                         'cancshare' => percFormat(0.0, $this),  
