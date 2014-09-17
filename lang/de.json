@@ -19,6 +19,7 @@
 	"widgetVoucherOverview": "OXID - Gutschein-Übersicht",
 	"widgetLiveRevenue": "OXID - Live-Umsatz",
 	"widgetRevenueAlert": "OXID - Umsatzwarnung",
+        "widgetReturningCustomers": "OXID - Einmalige & wiederkehrende Kunden",
 	"NoEntries": "Keine Einträge",
 	"Period": "Zeitraum",
 	"Revenue": "Umsatz",
@@ -141,6 +142,7 @@
 	"VoucherDescription": "Gutschein Bezeichnung",
 	"Used": "Verwendet",
 	"Orders": "Bestellungen",
+	"Customers": "Kunden",
         "More": "Mehr:"
     }
 }

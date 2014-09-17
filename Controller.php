@@ -253,6 +253,43 @@ class Controller extends \Piwik\Plugin\Controller
     }
 
         
+    /**
+     * This widget shows a table with onetime and returning customers analysis
+     **/
+    function widgetReturningCustomers()
+    {
+        include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
+
+        $controllerAction = $this->pluginName . '.' . __FUNCTION__;
+        $apiAction = 'OxidAnalysis.getReturningCustomers';
+
+        $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
+        
+        $view->config->columns_to_display = array('ordercount', 'customercount');
+        $view->config->translations['ordercount'] = Piwik::translate('OxidAnalysis_Orders');
+        $view->config->translations['customercount'] = Piwik::translate('OxidAnalysis_Customers');
+
+        $view->requestConfig->filter_sort_column = 'ordercount';
+        $view->requestConfig->filter_sort_order = 'asc';
+
+        $view->requestConfig->filter_limit = 5;
+        $view->config->show_exclude_low_population = false;
+        $view->config->show_table_all_columns = false;
+        //$view->config->show_all_views_icons = false;
+        $view->config->show_insights = false;
+        $view->config->disable_row_evolution  = true;
+        $view->config->enable_sort = false;
+        $view->config->show_search = false;
+        
+        /*$view->config->show_footer_message = Piwik::translate('OxidAnalysis_More')
+                        . ' <a href="javascript:broadcast.propagateAjax(\'module=OxidAnalysis&action=reportCODnotReceived\')">'
+                        . Piwik::translate('OxidAnalysis_OxidAnalysis') . ' - ' . Piwik::translate('OxidAnalysis_CODnotReceived')
+                        . '</a>';*/
+        
+        return $view->render();
+    }
+
+        
 	/*
 	 * See the result on piwik/?module=OxidPlugin&action=feedbackWidget 
 	 * or in the dashboard > Add a new widget. 

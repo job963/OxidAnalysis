@@ -27,16 +27,15 @@ require_once PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/functions.php';
  */
 class OxidAnalysis extends \Piwik\Plugin
 {
-    
     public function getListHooksRegistered()
     {
         return array(
-            'Menu.Reporting.addItems'  => 'addReportingMenuItems',
+            // - old - 'Menu.Reporting.addItems'  => 'addReportingMenuItems',
             'WidgetsList.addWidgets'   => 'addWidgets'
-            /* not used yet 'Menu.Top.addItems'       => 'addTopMenuItems', */
         );
     }
     
+/* ---- *
     function addReportingMenuItems()
     {
         MenuMain::getInstance()->add(Piwik::translate('OxidAnalysis_OxidAnalysis'), '', array('module' => 'OxidAnalysis', 'action' => 'reportRevenue'), true, 30);
@@ -49,8 +48,6 @@ class OxidAnalysis extends \Piwik\Plugin
         $this->addSubMenu(Piwik::translate('OxidAnalysis_CODnotReceived'), 'reportCODnotReceived', $i++);
         $this->addSubMenu(Piwik::translate('OxidAnalysis_InvoiceNotPaid'), 'reportInvoiceNotPaid', $i++);
         $this->addSubMenu(Piwik::translate('OxidAnalysis_PaidInAdvance'), 'reportPaidInAdvance', $i++);
-        //--$this->addSubMenu(Piwik::translate('OxidAnalysis_TopSeller'), 'oxidMenuTopSeller', $i++);
-        //--$this->addSubMenu(Piwik::translate('OxidAnalysis_TopCancels'), 'oxidMenuTopCancels', $i++);
         $this->addSubMenu(Piwik::translate('OxidAnalysis_TopsnFlops'), 'reportTopsnFlops', $i++);
         $this->addSubMenu(Piwik::translate('OxidAnalysis_AgeAnalysis'), 'reportAgeAnalysis', $i++);
         $this->addSubMenu(Piwik::translate('OxidAnalysis_StoreStatus'), 'reportStoreStatus', $i++);
@@ -58,22 +55,15 @@ class OxidAnalysis extends \Piwik\Plugin
         $this->addSubMenu(Piwik::translate('OxidAnalysis_VendorRevenue'), 'oxidMenuVendorRevenue', $i++);
         $this->addSubMenu(Piwik::translate('OxidAnalysis_Feedback'), 'reportFeedback', $i++);
     }	
-
-    
-    function addTopMenuItems()
-    {
-        $urlParams = array('module' => 'OxidAnalysis1', 'action' => 'notifications');
-        MenuTop::getInstance()->addEntry('OXID Analysis', $urlParams, $displayedForCurrentUser = true, $order = 3);
-    }
-
-    
+  
+  
     private function addSubMenu($subMenu, $action, $order)
     {
         MenuMain::getInstance()->add(Piwik::translate('OxidAnalysis_OxidAnalysis'), $subMenu, array('module' => 'OxidAnalysis', 'action' => $action), true, $order);
     }
+ --- */
 
-
-    public function  addWidgets()
+    public function addWidgets()
     {
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetRevenue', 'OxidAnalysis', 'widgetRevenue');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetCIAnotPaid', 'OxidAnalysis', 'widgetCIAnotPaid');
@@ -90,6 +80,7 @@ class OxidAnalysis extends \Piwik\Plugin
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetVoucherUse', 'OxidAnalysis', 'widgetVoucherUse');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetVoucherOverview', 'OxidAnalysis', 'widgetVoucherOverview');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetRevenueAlert', 'OxidAnalysis', 'widgetRevenueAlert');
+        WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetReturningCustomers', 'OxidAnalysis', 'widgetReturningCustomers');
     }
     
     

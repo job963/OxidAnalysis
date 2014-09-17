@@ -3687,6 +3687,45 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
         return $dbData;
 
     }
+
+
+    function getReturningCustomers($idSite, $period, $date, $segment = false)
+    {
+        include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
+        $site = new Site($idSite);
+        $this->SiteID = $idSite;
+        $this->Currency = $site->getCurrency();
+        
+        $dateStart = $this->oaGetStartDate($date,$period);
+        $dateEnd = $this->oaGetEndDate($date,$period);
+
+        $db = openDB($this);
+
+        $sql = "SELECT ordercount, COUNT(ordercount) AS customercount FROM "
+                . "(SELECT oxbillemail, COUNT(oxbillemail) AS ordercount "
+                    . "FROM oxorder "
+                    . "WHERE oxstorno=0 "
+                        . "AND oxshopid = {$this->ShopID[$idSite]} "
+                        . "AND DATE(oxorderdate) >= '{$dateStart}' "
+                        . "AND DATE(oxorderdate)  <= '{$dateEnd}' "
+                    . "GROUP BY oxbillemail) AS c "
+                . "GROUP BY ordercount ORDER BY ordercount ASC "; 
+        $dbData = $this->oaQuery($db, $sql, 'getReturningCustomers');
+        if ($this->DebugMode) logfile('debug', $dbData);
+        $db = null;
+        
+        /*$i = 0;
+        foreach($dbData as $value) {
+            $dbData[$i]['totalordersum'] = $this->oaCurrFormat($dbData[$i]['totalordersum'], $this);
+            $dbData[$i]['percentage'] = percFormat($dbData[$i]['percentage'], $this);
+            $i++;
+        }*/
+
+        $dataTable = new DataTable();
+        $dataTable = DataTable::makeFromIndexedArray($dbData);
+
+        return $dataTable;  
+    }
     
     
     

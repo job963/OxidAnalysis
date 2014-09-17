@@ -19,6 +19,7 @@
 	"VoucherOverviewWidget": "OXID - Voucher Overview",
 	"LiveRevenueWidget": "OXID - Live Revenue",
 	"RevenueAlertWidget": "OXID - Revenue Alerts",
+        "widgetReturningCustomers": "OXID - Onetime Customer",
 	"NoEntries": "no entries",
 	"Period": "Period",
 	"Revenue": "Revenue",
@@ -139,6 +140,7 @@
 	"VoucherDescription": "Voucher Description",
 	"Used": "Used",
 	"Orders": "Orders",
+	"Customers": "Customers",
         "More": "More:"
     }
 }
