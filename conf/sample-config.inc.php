@@ -32,12 +32,14 @@ $this->EnableMenuCIAnotPaid[1] = True;
 $this->EnableMenuCODnotReceived[1] = True;
 $this->EnableMenuInvoiceNotPaid[1] = True;
 $this->EnableMenuPaidInAdvance[1] = True;
-$this->EnableMenuTopSeller[1] = True;
-$this->EnableMenuTopCancels[1] = True;
+$this->EnableMenuTopsnFlops[1] = True;
+// obsolete: $this->EnableMenuTopSeller[1] = True;
+// obsolete: $this->EnableMenuTopCancels[1] = True;
 $this->EnableMenuAgeAnalysis[1] = True;
-$this->EnableMenuStoreStatus[1] = True;
+$this->EnableMenuStoreStatus[1] = False;
 $this->EnableMenuManufacturerRevenue[1] = True;
 $this->EnableMenuVendorRevenue[1] = True;
+$this->EnableMenuFeedback[1] = False;
 
 $this->PaymentCIA[1] = "'oxidpayadvance'";
 $this->PaymentCOD[1] = "'oxidcashondel'";

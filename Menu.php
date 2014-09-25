@@ -13,6 +13,7 @@
 
 namespace Piwik\Plugins\OxidAnalysis;
 
+use Piwik\Common;
 use Piwik\Menu\MenuReporting;
 use Piwik\Menu\MenuUser;
 use Piwik\Piwik;
@@ -29,23 +30,52 @@ class Menu extends \Piwik\Plugin\Menu
     
     public function configureReportingMenu(MenuReporting $menu)
     {
+        include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
+        $this->SiteID = Common::getRequestVar('idSite');
+
         logfile('debug', '*** Function Menu//configureReportingMenu called ***');
         $menu->add(Piwik::translate('OxidAnalysis_OxidAnalysis'), '', array('module' => 'OxidAnalysis', 'action' => 'reportRevenue'), true, 30);
 
         $i = 1;
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_Revenue'), 'reportRevenue', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_TimeRevenue'), 'reportTimeRevenue', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_ReadyToSend'), 'reportReadyToSend', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_CIAnotPaid'), 'reportCIAnotPaid', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_CODnotReceived'), 'reportCODnotReceived', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_InvoiceNotPaid'), 'reportInvoiceNotPaid', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_PaidInAdvance'), 'reportPaidInAdvance', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_TopsnFlops'), 'reportTopsnFlops', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_AgeAnalysis'), 'reportAgeAnalysis', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_StoreStatus'), 'reportStoreStatus', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_ManufacturerRevenue'), 'oxidMenuManufacturerRevenue', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_VendorRevenue'), 'oxidMenuVendorRevenue', $i++);
-        $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_Feedback'), 'reportFeedback', $i++);
+        
+        if ($this->EnableMenuRevenue[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_Revenue'), 'reportRevenue', $i++);
+        
+        if ($this->EnableMenuTimeRevenue[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_TimeRevenue'), 'reportTimeRevenue', $i++);
+        
+        if ($this->EnableMenuReadyToSend[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_ReadyToSend'), 'reportReadyToSend', $i++);
+        
+        if ($this->EnableMenuCIAnotPaid[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_CIAnotPaid'), 'reportCIAnotPaid', $i++);
+        
+        if ($this->EnableMenuCODnotReceived[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_CODnotReceived'), 'reportCODnotReceived', $i++);
+        
+        if ($this->EnableMenuInvoiceNotPaid[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_InvoiceNotPaid'), 'reportInvoiceNotPaid', $i++);
+        
+        if ($this->EnableMenuPaidInAdvance[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_PaidInAdvance'), 'reportPaidInAdvance', $i++);
+        
+        if ($this->EnableMenuTopsnFlops[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_TopsnFlops'), 'reportTopsnFlops', $i++);
+        
+        if ($this->EnableMenuAgeAnalysis[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_AgeAnalysis'), 'reportAgeAnalysis', $i++);
+        
+        if ($this->EnableMenuStoreStatus[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_StoreStatus'), 'reportStoreStatus', $i++);
+        
+        if ($this->EnableMenuManufacturerRevenue[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_ManufacturerRevenue'), 'oxidMenuManufacturerRevenue', $i++);
+        
+        if ($this->EnableMenuVendorRevenue[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_VendorRevenue'), 'oxidMenuVendorRevenue', $i++);
+        
+        if ($this->EnableMenuFeedback[$this->SiteID])
+            $this->addSubMenu($menu, Piwik::translate('OxidAnalysis_Feedback'), 'reportFeedback', $i++);
     }
     
 }
