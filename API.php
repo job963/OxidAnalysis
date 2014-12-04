@@ -1201,8 +1201,8 @@ class API extends \Piwik\Plugin\API
                 'revenue23' => alignRight( $this->oaCurrFormat($revenuePrevYear, $this, false) . $icoBlank)
             ));
         
-        $tipMargin  = $this->oaTrendTip( $this->oaCurrFormat($marginTrendYear, $this), $marginForecastYear, $this );
-        $tipRevenue = $this->oaTrendTip( $this->oaCurrFormat($revenueTrendYear, $this), $revenueForecastYear, $this );
+        $tipMargin  = $this->oaTrendTip( $marginTrendYear, $marginForecastYear, $this );
+        $tipRevenue = $this->oaTrendTip( $revenueTrendYear, $revenueForecastYear, $this );
         $icoMarginTrend  = $this->oaTrendIcon( $marginForecastYear, $marginPrevYear );
         $icoRevenueTrend = $this->oaTrendIcon( $revenueForecastYear, $revenuePrevYear );
         array_push($dbData, array(
@@ -1222,8 +1222,8 @@ class API extends \Piwik\Plugin\API
                 'revenue23' => alignRight( $this->oaCurrFormat($revenuePrevMonth, $this, false) . $icoBlank)
             ));
         
-        $tipMargin  = $this->oaTrendTip( $marginTrendMonth, $this->oaCurrFormat($marginForecastMonth, $this) , $this );
-        $tipRevenue = $this->oaTrendTip( $revenueTrendMonth, $this->oaCurrFormat($revenueForecastMonth, $this) , $this );
+        $tipMargin  = $this->oaTrendTip( $marginTrendMonth, $marginForecastMonth , $this );
+        $tipRevenue = $this->oaTrendTip( $revenueTrendMonth, $revenueForecastMonth , $this );
         $icoMarginTrend  = $this->oaTrendIcon( $marginForecastMonth, $marginPrevMonth );
         $icoRevenueTrend = $this->oaTrendIcon( $revenueForecastMonth, $revenuePrevMonth );
         array_push($dbData, array(
@@ -1243,8 +1243,8 @@ class API extends \Piwik\Plugin\API
                 'revenue23' => alignRight( $this->oaCurrFormat($revenuePrevWeek, $this, false) . $icoBlank)
             ));
         
-        $tipMargin  = $this->oaTrendTip( $marginTrendWeek, $this->oaCurrFormat($marginForecastWeek, $this), $this );
-        $tipRevenue = $this->oaTrendTip( $revenueTrendWeek, $this->oaCurrFormat($revenueForecastWeek, $this), $this );
+        $tipMargin  = $this->oaTrendTip( $marginTrendWeek, $marginForecastWeek, $this );
+        $tipRevenue = $this->oaTrendTip( $revenueTrendWeek, $revenueForecastWeek, $this );
         $icoMarginTrend  = $this->oaTrendIcon( $marginForecastWeek, $marginPrevWeek );
         $icoRevenueTrend = $this->oaTrendIcon( $revenueForecastWeek, $revenuePrevWeek );
         array_push($dbData, array(
@@ -1264,8 +1264,8 @@ class API extends \Piwik\Plugin\API
                 'revenue23' => alignRight( $this->oaCurrFormat($revenueYesterday, $this, false) . $icoBlank )
             ));
         
-        $tipMargin  = $this->oaTrendTip( $marginTrendDay, $this->oaCurrFormat($marginForecastDay, $this), $this );
-        $tipRevenue = $this->oaTrendTip( $revenueTrendDay, $this->oaCurrFormat($revenueForecastDay, $this), $this );
+        $tipMargin  = $this->oaTrendTip( $marginTrendDay, $marginForecastDay, $this );
+        $tipRevenue = $this->oaTrendTip( $revenueTrendDay, $revenueForecastDay, $this );
         $icoMarginTrend  = $this->oaTrendIcon( $marginForecastDay, $marginYesterday );
         $icoRevenueTrend = $this->oaTrendIcon( $revenueForecastDay, $revenueYesterday );
         array_push($dbData, array(
@@ -3786,7 +3786,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     
     function oaTrendTip ($valueTrend, $valueForecast, $conf)
     {
-        return Piwik::translate('OxidAnalysis_Trend')    . sprintf(": %+d %% \n", $valueTrend)
+        return Piwik::translate('OxidAnalysis_Trend')    . sprintf(": %+1.1F %% \n", $valueTrend)
              . Piwik::translate('OxidAnalysis_Forecast') . sprintf(": %+1.2F %s", $valueForecast, MetricsFormatter::getCurrencySymbol($conf->SiteID));
         
     }
@@ -3807,10 +3807,18 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     function oaCurrFormat($value, $conf, $align=True)
     {
         //$locale = explode(",",str_replace("-","_",$_SERVER['HTTP_ACCEPT_LANGUAGE']));
+        
         if ($align)
             return ( alignRight( number_format($value, 2, $conf->DecimalPoint, $conf->ThousandsSep).' '.MetricsFormatter::getCurrencySymbol($conf->SiteID) ) );
         else
             return ( number_format($value, 2, $conf->DecimalPoint, $conf->ThousandsSep).' '.MetricsFormatter::getCurrencySymbol($conf->SiteID) );
+        
+        /*
+        if ($align)
+            return ( alignRight( number_format($value, 2).' '.MetricsFormatter::getCurrencySymbol($conf->SiteID) ) );
+        else
+            return ( number_format($value, 2).' '.MetricsFormatter::getCurrencySymbol($conf->SiteID) );
+         */
     }
 	
 }
