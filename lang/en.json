@@ -1,8 +1,9 @@
 {
     "OxidAnalysis": {
 	"PluginDescription": "OXID eShop Plugin: This plugin analyses and shows data from eCommerce solution OXID eSales.",
-	"OxidAnalysis": "OXID Analysis",
-	"OxidWidgets": "OXID eShop",
+	"OxidAnalysis": "OXID",
+        
+	"OxidWidgets": "OXID eShop Analysis",
 	"RevenueWidget": "OXID - Revenue",
 	"LogisticsWidget": "OXID - Logistics",
 	"BirthdayWidget": "OXID - Birthdays",
@@ -20,10 +21,13 @@
 	"LiveRevenueWidget": "OXID - Live Revenue",
 	"RevenueAlertWidget": "OXID - Revenue Alerts",
         "widgetReturningCustomers": "OXID - Onetime Customer",
+        "widgetRefererSummary": "OXID - Referrer Summary",
+        
 	"NoEntries": "no entries",
 	"Period": "Period",
 	"Revenue": "Revenue",
 	"RevenueTitle": "Revenue",
+        "NetBuy": "Purchase Value",
 	"Margin": "Gross Profit",
 	"MarginPerc": "Gross Profit Share",
 	"Storno": "Reversal",
@@ -141,6 +145,7 @@
 	"Used": "Used",
 	"Orders": "Orders",
 	"Customers": "Customers",
-        "More": "More:"
+        "More": "More:",
+        "Referer": "Referrer"
     }
 }

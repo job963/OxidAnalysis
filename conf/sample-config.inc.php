@@ -54,6 +54,7 @@ $this->AgeClasses[1] = "0-17|18-25|26-40|41-60|61-99";
 $this->CarrierTrackingUrl[1] = "http://tracking.hlg.de/Tracking.jsp?TrackID=";
 $this->IgnoreRemark[1] = "Hier k%nnen Sie uns noch etwas mitteilen.";
 $this->LogisticsRange[1] = "last30";
+$this->UseReferer[1] = False;
 
 /* repeat here the block above for the next eShop */
 

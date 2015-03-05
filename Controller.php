@@ -5,7 +5,7 @@
  * @link http://piwik.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
- * @copyright (c) 2011-2014, Joachim Barthel
+ * @copyright (c) 2011-2015, Joachim Barthel
  * @author Joachim Barthel <jobarthel@gmail.com>
  * @category Piwik_Plugins
  * @package OXID_Analysis
@@ -270,6 +270,44 @@ class Controller extends \Piwik\Plugin\Controller
         $view->config->translations['customercount'] = Piwik::translate('OxidAnalysis_Customers');
 
         $view->requestConfig->filter_sort_column = 'ordercount';
+        $view->requestConfig->filter_sort_order = 'asc';
+
+        $view->requestConfig->filter_limit = 5;
+        $view->config->show_exclude_low_population = false;
+        $view->config->show_table_all_columns = false;
+        //$view->config->show_all_views_icons = false;
+        $view->config->show_insights = false;
+        $view->config->disable_row_evolution  = true;
+        $view->config->enable_sort = false;
+        $view->config->show_search = false;
+        
+        /*$view->config->show_footer_message = Piwik::translate('OxidAnalysis_More')
+                        . ' <a href="javascript:broadcast.propagateAjax(\'module=OxidAnalysis&action=reportCODnotReceived\')">'
+                        . Piwik::translate('OxidAnalysis_OxidAnalysis') . ' - ' . Piwik::translate('OxidAnalysis_CODnotReceived')
+                        . '</a>';*/
+        
+        return $view->render();
+    }
+
+        
+    /**
+     * This widget shows a table with referrers and their revenue
+     **/
+    function widgetRefererSummary()
+    {
+        include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
+
+        $controllerAction = $this->pluginName . '.' . __FUNCTION__;
+        $apiAction = 'OxidAnalysis.getRefererSummary';
+
+        $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
+        
+        $view->config->columns_to_display = array('referername', 'ordercount', 'revenuesum');
+        $view->config->translations['referername'] = Piwik::translate('OxidAnalysis_Referer');
+        $view->config->translations['ordercount'] = Piwik::translate('OxidAnalysis_Count');
+        $view->config->translations['revenuesum'] = Piwik::translate('OxidAnalysis_Revenue');
+
+        $view->requestConfig->filter_sort_column = 'referercount';
         $view->requestConfig->filter_sort_order = 'asc';
 
         $view->requestConfig->filter_limit = 5;
@@ -1410,9 +1448,10 @@ class Controller extends \Piwik\Plugin\Controller
 
         $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
 
-        $view->config->columns_to_display = array('deliverer', 'totalcount', 'netmargin', 'percentnet', 'brutsum', 'percentbrut');
+        $view->config->columns_to_display = array('deliverer', 'totalcount', 'netbuysum', 'netmargin', 'percentnet', 'brutsum', 'percentbrut');
         $view->config->translations['deliverer'] = Piwik::translate('OxidAnalysis_Manufacturer');
         $view->config->translations['totalcount'] = Piwik::translate('OxidAnalysis_Count');
+        $view->config->translations['netbuysum'] = Piwik::translate('OxidAnalysis_NetBuy');
         $view->config->translations['netmargin'] = Piwik::translate('OxidAnalysis_Margin');
         $view->config->translations['percentnet'] = Piwik::translate('OxidAnalysis_Percentage');
         $view->config->translations['brutsum'] = Piwik::translate('OxidAnalysis_Revenue');
@@ -1461,9 +1500,10 @@ class Controller extends \Piwik\Plugin\Controller
 
         $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
 
-        $view->config->columns_to_display = array('deliverer', 'totalcount', 'netmargin', 'percentnet', 'brutsum', 'percentbrut');
+        $view->config->columns_to_display = array('deliverer', 'totalcount', 'netbuysum', 'netmargin', 'percentnet', 'brutsum', 'percentbrut');
         $view->config->translations['deliverer'] = Piwik::translate('OxidAnalysis_Vendor');
         $view->config->translations['totalcount'] = Piwik::translate('OxidAnalysis_Count');
+        $view->config->translations['netbuysum'] = Piwik::translate('OxidAnalysis_NetBuy');
         $view->config->translations['netmargin'] = Piwik::translate('OxidAnalysis_Margin');
         $view->config->translations['percentnet'] = Piwik::translate('OxidAnalysis_Percentage');
         $view->config->translations['brutsum'] = Piwik::translate('OxidAnalysis_Revenue');

@@ -5,7 +5,7 @@
  * @link http://piwik.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  * 
- * @copyright (c) 2011-2014, Joachim Barthel
+ * @copyright (c) 2011-2015, Joachim Barthel
  * @author Joachim Barthel <jobarthel@gmail.com>
  * @category Piwik_Plugins
  * @package OXID_Analysis
@@ -2690,6 +2690,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
         foreach ($Deliverers as $deliverer) {
 
             $sql = "SELECT '{$deliverer['oxtitle']}', SUM(d.oxamount) AS totalcount, "
+                        . "SUM(d.oxamount * a.oxbprice) AS netbuysum, "
                         . "(SUM(d.oxnetprice) - "
                             . "SUM(d.oxamount * a.oxbprice)"
                         . ") AS netmargin, "
@@ -2715,6 +2716,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
                     $dbData[$i]['deliverer'] = $deliverer['oxtitle'];
                     if (!empty($dbSingleVal[0]['brutpricesum'])) {
                             $dbData[$i]['totalcount'] = $dbSingleVal[0]['totalcount'];
+                            $dbData[$i]['netbuysum'] = $dbSingleVal[0]['netbuysum'];
                             $dbData[$i]['netmargin'] = $dbSingleVal[0]['netmargin'];
                             $dbData[$i]['brutsum'] = $dbSingleVal[0]['brutpricesum'];
                             $totalbrutsum += $dbData[$i]['brutsum'];
@@ -2722,6 +2724,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
                             //$dbData[$manufacturer['oxtitle']] = $dbSingleVal[0]['oxbrutpricesum'];
                     } else {
                             $dbData[$i]['totalcount'] = 0;
+                            $dbData[$i]['netbuysum'] = 0.00;
                             $dbData[$i]['netmargin'] = 0.00;
                             $dbData[$i]['brutsum'] = 0.00;
                             //$dbData[$manufacturer['oxtitle']] = 0.0;
@@ -2732,13 +2735,18 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
                     /*******/
                     $sql = "SELECT "
                                 . "(SELECT b.{$delivererid} FROM oxarticles b WHERE  a.oxparentid = b.oxid) AS delivererid, " 
-                                . "SUM(d.oxamount) AS totalcount, " 
-                                . "(SUM(d.oxnetprice) - "
+                                . "SUM(d.oxamount) AS totalcount, "
                                 . "SUM(d.oxamount * "
-                                    . "IF(a.oxbprice=0.0,"
-                                        . "(SELECT a2.oxbprice FROM oxarticles a2 WHERE a2.oxid = a.oxparentid),"
-                                        . "a.oxbprice))"
-                                . ") AS netmargin, "
+                                        . "IF(a.oxbprice=0.0,"
+                                            . "(SELECT a2.oxbprice FROM oxarticles a2 WHERE a2.oxid = a.oxparentid),"
+                                            . "a.oxbprice))"
+                                        . "AS netbuysum, " 
+                                . "(SUM(d.oxnetprice) - "
+                                    . "SUM(d.oxamount * "
+                                        . "IF(a.oxbprice=0.0,"
+                                            . "(SELECT a2.oxbprice FROM oxarticles a2 WHERE a2.oxid = a.oxparentid),"
+                                            . "a.oxbprice))"
+                                    . ") AS netmargin, "
                                 . "SUM(d.oxbrutprice) AS brutpricesum " 
                              . "FROM "
                                 . "oxorderarticles d, oxorder o, oxarticles a "
@@ -2769,6 +2777,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
                     if (!empty($dbSingleVal[0]['brutpricesum'])) {
                             $dbData[$i]['totalcount'] += $dbSingleVal[0]['totalcount'];
                             $dbData[$i]['brutsum'] += $dbSingleVal[0]['brutpricesum'];
+                            $dbData[$i]['netbuysum'] += $dbSingleVal[0]['netbuysum'];
                             $dbData[$i]['netmargin'] += $dbSingleVal[0]['netmargin'];
                             $totalbrutsum += $dbData[$i]['brutsum'];
                             $totalnetmargin += $dbData[$i]['netmargin'];
@@ -2793,6 +2802,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
                     $dbData[$i]['percentnet'] = percFormat( $dbData[$i]['netmargin'] / $totalnetmargin * 100.0, $this );
                     $dbData[$i]['percentbrut'] = percFormat( $dbData[$i]['brutsum'] / $totalbrutsum * 100.0, $this );
                     $dbData[$i]['totalcount'] = intFormat($dbData[$i]['totalcount'], $this);
+                    $dbData[$i]['netbuysum'] = $this->oaCurrFormat($dbData[$i]['netbuysum'], $this);
                     $dbData[$i]['netmargin'] = $this->oaCurrFormat($dbData[$i]['netmargin'], $this);
                     $dbData[$i]['brutsum'] = $this->oaCurrFormat($dbData[$i]['brutsum'], $this);
             }
@@ -3726,6 +3736,45 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
 
         return $dataTable;  
     }
+
+
+    function getRefererSummary($idSite, $period, $date, $segment = false)
+    {
+        include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
+        $site = new Site($idSite);
+        $this->SiteID = $idSite;
+        $this->Currency = $site->getCurrency();
+        
+        $dateStart = $this->oaGetStartDate($date,$period);
+        $dateEnd = $this->oaGetEndDate($date,$period);
+
+        $db = openDB($this);
+
+        $sql = "SELECT "
+                    . "IF(ISNULL(jxrefdomain),'',jxrefdomain) AS referername, COUNT(*) AS ordercount, ROUND(SUM(oxtotalordersum),2) AS revenuesum "
+                . "FROM oxorder "
+                . "WHERE oxstorno=0 "
+                    . "AND oxshopid = {$this->ShopID[$idSite]} "
+                    . "AND DATE(oxorderdate) >= '{$dateStart}' "
+                    . "AND DATE(oxorderdate)  <= '{$dateEnd}' "
+                . "GROUP BY jxrefdomain "
+                . "ORDER BY ordercount DESC "; 
+        $dbData = $this->oaQuery($db, $sql, 'getRefererSummary');
+        if ($this->DebugMode) logfile('debug', $dbData);
+        $db = null;
+        
+        /*$i = 0;
+        foreach($dbData as $value) {
+            $dbData[$i]['totalordersum'] = $this->oaCurrFormat($dbData[$i]['totalordersum'], $this);
+            $dbData[$i]['percentage'] = percFormat($dbData[$i]['percentage'], $this);
+            $i++;
+        }*/
+
+        $dataTable = new DataTable();
+        $dataTable = DataTable::makeFromIndexedArray($dbData);
+
+        return $dataTable;  
+    }
     
     
     
@@ -3804,7 +3853,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     }
     
     
-    function oaCurrFormat($value, $conf, $align=True)
+    function oaCurrFormat($value=0.0, $conf, $align=True)
     {
         //$locale = explode(",",str_replace("-","_",$_SERVER['HTTP_ACCEPT_LANGUAGE']));
         
