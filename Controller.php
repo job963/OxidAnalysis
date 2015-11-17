@@ -375,6 +375,41 @@ class Controller extends \Piwik\Plugin\Controller
 
         
     /**
+     * This widget shows the revenue sums for each country
+     **/
+    function widgetCountryRevenue()
+    {
+        $controllerAction = $this->pluginName . '.' . __FUNCTION__;
+        $apiAction = 'OxidAnalysis.getCountryRevenue';
+
+        $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
+        
+        $view->config->columns_to_display = array('country', 'revenue');
+
+        $cols = array('country', 'revenue');
+        $view->config->translations['country'] = Piwik::translate('OxidAnalysis_Country');
+        $view->config->translations['revenue'] = Piwik::translate('OxidAnalysis_Revenue');
+        
+        $view->requestConfig->filter_sort_column = 'revenue';
+        $view->requestConfig->filter_sort_order = 'desc';
+
+        $view->requestConfig->filter_limit = 5;
+        $view->config->show_exclude_low_population = false;
+        $view->config->show_table_all_columns = false;
+        $view->config->show_all_views_icons = false;
+        $view->config->disable_row_evolution  = true;
+        $view->config->show_search = false;
+        
+        /*$view->config->show_footer_message = Piwik::translate('OxidAnalysis_More')
+                        . ' <a href="javascript:broadcast.propagateAjax(\'module=OxidAnalysis&action=reportInvoiceNotPaid\')">'
+                        . Piwik::translate('OxidAnalysis_OxidAnalysis') . ' - ' . Piwik::translate('OxidAnalysis_InvoiceNotPaid')
+                        . '</a>';*/
+        
+        return $view->render();
+    }
+
+        
+    /**
      * This widget shows the usage of the defined vouchers
      **/
     function widgetVoucherUse()

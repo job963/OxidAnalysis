@@ -2977,6 +2977,74 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     }
 
 
+    function getCountryRevenue($idSite, $period, $date, $segment = false)
+    {
+        include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
+
+        $site = new Site($idSite);
+        $this->SiteID = $idSite;
+        $this->Currency = $site->getCurrency();
+        
+        $dateStart = $this->oaGetStartDate($date,$period);
+        $dateEnd = $this->oaGetEndDate($date,$period);
+
+        switch ($period) {
+
+            case 'day':
+                $whereTime = "date(o.oxorderdate) = '{$dateStart}' ";
+                break;
+
+            case 'range':
+            case 'week':
+            case 'month':
+            case 'year':
+                $whereTime = "date(o.oxorderdate) >= '{$dateStart}' AND  date(o.oxorderdate) <= '{$dateEnd}' ";
+                break;
+
+        }
+
+        $sql = "SELECT (SELECT c.oxtitle FROM oxcountry c WHERE c.oxid = o.oxbillcountryid) AS country, SUM(o.oxtotalbrutsum) AS revenue, "
+                    . "o.oxbillcountryid, o.oxorderdate, o.oxshopid "
+                . "FROM oxorder o "
+                . "WHERE {$whereTime} "
+                    . "AND o.oxstorno = 0 "
+                    . "AND o.oxshopid = {$this->ShopID[$idSite]} "
+                . "GROUP BY o.oxbillcountryid "
+                . "LIMIT 0, 500 ";
+
+        $db = openDB($this);
+        $dbData = $this->oaQuery($db, $sql, 'getCountryRevenue');
+
+        if ($this->DebugMode) logfile('debug', $dbData);
+
+        /*$i = 0;
+        foreach($dbData as $value) {
+            $dbData[$i]['oxdiscount'] = $this->oaCurrFormat($dbData[$i]['oxdiscount'], $this);
+            $dbData[$i]['oxtotalordersum'] = $this->oaCurrFormat($dbData[$i]['oxtotalordersum'], $this);
+
+            $sql = "SELECT oxamount, oxtitle "
+                    . "FROM oxorderarticles "
+                    . "WHERE oxorderid = '{$dbData[$i]['oxid']}' "
+                        . "AND oxstorno = 0 ";
+            $dbData = $this->oaQuery($db, $sql, 'getVoucherUse');
+            $dbData[$i]['oxdetails'] = Piwik::translate('OxidAnalysis_Order') . ':';
+            foreach ($details as $detail) {
+                $dbData[$i]['oxdetails'] = $dbData[$i]['oxdetails'] . chr(13) . $detail['oxamount'] . ' x ' . $detail['oxtitle'];
+            }
+            $dbData[$i]['oxvouchernr'] = addTitle($dbData[$i]['oxvouchernr'], $dbData[$i]['oxseriedescription']);
+            $dbData[$i]['oxtotalordersum'] = addTitle($dbData[$i]['oxtotalordersum'], $dbData[$i]['oxdetails']);
+            $i++;
+        }*/
+
+        $db = null;
+
+        $dataTable = new DataTable();
+        $dataTable = DataTable::makeFromIndexedArray($dbData);
+
+        return $dataTable;
+    }
+
+
     function getVoucherUse($idSite)
     {
         include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
@@ -3453,7 +3521,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
         foreach($dbData as $value) {
             $dbData[$i]['totalordersum'] = $this->oaCurrFormat($dbData[$i]['totalordersum'], $this);
             $dbData[$i]['percentage'] = percFormat($dbData[$i]['percentage'], $this);
-            $i++;
+           $i++;
         }
 
         $dataTable = new DataTable();
@@ -3751,7 +3819,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
         $db = openDB($this);
 
         $sql = "SELECT "
-                    . "IF(ISNULL(jxrefdomain),'',jxrefdomain) AS referername, COUNT(*) AS ordercount, ROUND(SUM(oxtotalordersum),2) AS revenuesum "
+                    . "jxreferer AS label, IF(ISNULL(jxrefdomain),'',jxrefdomain) AS referername, COUNT(*) AS ordercount, ROUND(SUM(oxtotalordersum),2) AS revenuesum "
                 . "FROM oxorder "
                 . "WHERE oxstorno=0 "
                     . "AND oxshopid = {$this->ShopID[$idSite]} "
@@ -3773,6 +3841,14 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
         $dataTable = new DataTable();
         $dataTable = DataTable::makeFromIndexedArray($dbData);
 
+        /*foreach ($dataTable->getRows() as $row) {
+            //$logo = sprintf('plugins/ExampleUI/images/icons-planet/%s.png', strtolower($row->getColumn('label')));
+            //$url = sprintf('http://en.wikipedia.org/wiki/%s', $row->getColumn('label'));
+
+            //$row->addMetadata('logo', $logo);
+            $row->addMetadata('label', 'test');
+        }*/
+        
         return $dataTable;  
     }
     
@@ -3857,10 +3933,11 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
     {
         //$locale = explode(",",str_replace("-","_",$_SERVER['HTTP_ACCEPT_LANGUAGE']));
         
+        $align=FALSE;
         if ($align)
-            return ( alignRight( number_format($value, 2, $conf->DecimalPoint, $conf->ThousandsSep).' '.MetricsFormatter::getCurrencySymbol($conf->SiteID) ) );
+            return ( '<span class="value">' . alignRight( number_format($value, 2, $conf->DecimalPoint, $conf->ThousandsSep).' '.MetricsFormatter::getCurrencySymbol($conf->SiteID) ) . '</span>' );
         else
-            return ( number_format($value, 2, $conf->DecimalPoint, $conf->ThousandsSep).' '.MetricsFormatter::getCurrencySymbol($conf->SiteID) );
+            return ( '<span class="value">' . number_format($value, 2, $conf->DecimalPoint, $conf->ThousandsSep).' '.MetricsFormatter::getCurrencySymbol($conf->SiteID) . '</span>' );
         
         /*
         if ($align)

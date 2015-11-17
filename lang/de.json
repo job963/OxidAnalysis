@@ -7,7 +7,7 @@
 	"widgetRevenue": "OXID - Umsatzübersicht",
 	"widgetLogistics": "OXID - Logistik",
 	"widgetBirthday": "OXID - Geburtstage",
-	"FeedbackWidget": "OXID - Feedback erinnern",
+	"widgetFeedback": "OXID - Feedback erinnern",
 	"widgetCIAnotPaid": "OXID - Vorkasse offen",
 	"widgetCODnotPaid": "OXID - Nachnahme offen",
 	"widgetInvoiceNotPaid": "OXID - Rechnung offen",
@@ -22,6 +22,7 @@
 	"widgetRevenueAlert": "OXID - Umsatzwarnung",
         "widgetReturningCustomers": "OXID - Einmalige&wiederkehrende Kunden",
         "widgetRefererSummary": "OXID - Referrer-Übersicht",
+        "widgetCountryRevenue": "OXID - Länder-Umsatz",
         
 	"NoEntries": "Keine Einträge",
 	"Period": "Zeitraum",
@@ -147,7 +148,9 @@
 	"Used": "Verwendet",
 	"Orders": "Bestellungen",
 	"Customers": "Kunden",
-        "More": "Mehr:"
+        "More": "Mehr:",
+        "Referer": "Referrer",
+	"Country": "Land"
     }
 }
 

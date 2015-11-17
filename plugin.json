@@ -1,9 +1,9 @@
 {
     "name": "OxidAnalysis",
     "description": "OXID eShop Analysis: Plugin for analyzing and visualizing data of the eCommerce solution OXID eSales.",
-    "version": "2.11.0",
-    "keywords": ["oxid", "eshop", "sales", "analysis", "visualization"],
-    "homepage": "https://github.com/job963",
+    "version": "2.11.1",
+    "keywords": ["oxid", "eshop", "ecommerce", "sales", "analysis", "visualization"],
+    "homepage": "https://github.com/job963/OxidAnalysis",
     "license": "GPL v3+",
     "authors": [
         {

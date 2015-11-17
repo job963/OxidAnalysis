@@ -5,7 +5,7 @@
  * @link http://piwik.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  * 
- * @copyright (c) 2011-2014, Joachim Barthel
+ * @copyright (c) 2011-2015, Joachim Barthel
  * @author Joachim Barthel <jobarthel@gmail.com>
  * @category Piwik_Plugins
  * @package OXID_Analysis
@@ -23,7 +23,8 @@ class Menu extends \Piwik\Plugin\Menu
 {
     private function addSubMenu(MenuReporting $menu, $subMenu, $action, $order)
     {
-        logfile('debug', '*** Function Menu//addSubMenu called ***');
+        //logfile('debug', '*** Function Menu//addSubMenu called ***');
+        $menu->registerMenuIcon(Piwik::translate('OxidAnalysis_OxidAnalysis'), 'icon-ecommerce-order');
         $menu->add(Piwik::translate('OxidAnalysis_OxidAnalysis'), $subMenu, array('module' => 'OxidAnalysis', 'action' => $action), true, $order);
     }
     
@@ -33,7 +34,7 @@ class Menu extends \Piwik\Plugin\Menu
         include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
         $this->SiteID = Common::getRequestVar('idSite');
 
-        logfile('debug', '*** Function Menu//configureReportingMenu called ***');
+        //logfile('debug', '*** Function Menu//configureReportingMenu called ***');
         $menu->add(Piwik::translate('OxidAnalysis_OxidAnalysis'), '', array('module' => 'OxidAnalysis', 'action' => 'reportRevenue'), true, 30);
 
         $i = 1;

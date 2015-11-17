@@ -1,5 +1,9 @@
 <?php 
 
+/*
+ * 
+ */
+
 function openDB($conf) {
 	
     switch ($conf->DatabaseType) {
@@ -191,22 +195,33 @@ function currFormat($value, $conf)
 // Format Integer Values
 function intFormat($value, $conf)
 {
-        if (empty($conf->Style)) $conf->Style = '';
+    if (empty($conf->Style)) $conf->Style = '';
+        /*
         return '<div style="text-align:right;'.$conf->Style.'">' 
                 . $value 
                 . '&nbsp;'
                 . '</div>';
+        */
+    return '<span class="value" style="display:inline-block;'.$conf->Style.'">' 
+            . $value 
+            . '</span>';
 }
 
 
 // Format Percentage Values
 function percFormat($value, $conf)
 {
-        if (empty($conf->Style)) $conf->Style = '';
+    if (empty($conf->Style)) $conf->Style = '';
+        /*
         return '<div style="text-align:right;'.$conf->Style.'">' 
                 . number_format($value, 1, $conf->DecimalPoint, '') 
                 . '&nbsp;' . '%' . '&nbsp;' 
                 . '</div>';
+        */
+    return '<span class="value" style="display:inline-block;'.$conf->Style.'">' 
+            . number_format($value, 1, $conf->DecimalPoint, '') 
+            . '&nbsp;' . '%' . '&nbsp;' 
+            . '</span>';
 }
 
 
@@ -224,9 +239,9 @@ function addTitle($value, $title)
 function showGray($value, $conf)
 {
     if (empty($conf->StyleGrayText)) $conf->StyleGrayText = 'color:#aaa;';
-    return '<div style="'.$conf->StyleGrayText.'">' 
+    return '<span style="'.$conf->StyleGrayText.'">' 
             . $value 
-            . '</div>';
+            . '</span>';
 }
 
 

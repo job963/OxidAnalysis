@@ -31,7 +31,6 @@ class OxidAnalysis extends \Piwik\Plugin
     public function getListHooksRegistered()
     {
         return array(
-            // - old - 'Menu.Reporting.addItems'  => 'addReportingMenuItems',
             'WidgetsList.addWidgets'   => 'addWidgets'
         );
     }
@@ -83,6 +82,7 @@ class OxidAnalysis extends \Piwik\Plugin
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetVoucherOverview', 'OxidAnalysis', 'widgetVoucherOverview');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetRevenueAlert', 'OxidAnalysis', 'widgetRevenueAlert');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetReturningCustomers', 'OxidAnalysis', 'widgetReturningCustomers');
+        WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetCountryRevenue', 'OxidAnalysis', 'widgetCountryRevenue');
         $idSite = Common::getRequestVar('idSite', 1, 'int');
         if ($this->UseReferer[$idSite]) {
             WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetRefererSummary', 'OxidAnalysis', 'widgetRefererSummary');
