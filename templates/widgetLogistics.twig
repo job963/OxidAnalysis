@@ -1,4 +1,10 @@
-
+{#
+ # @copyright (c) 2011-2016, Joachim Barthel
+ # @author Joachim Barthel <jobarthel@gmail.com>
+ # @category Piwik_Plugins
+ # @package OXID_Analysis
+ #}
+ 
 <style>
     .oaActCell {
         font-weight: bold;
@@ -44,7 +50,7 @@
                     <td>{{ countReady }}<br /><span class="oaActCellFooter">{{'OxidAnalysis_Total'|translate}}</span></td>
                 </tr>
                 <tr class="subDataTable oaPrevCell" align="right">
-                    <td>{{ sumReady }}<br /><span class="oaPrevCellFooter">{{'OxidAnalysis_GoodsValue'|translate}}</span></td>
+                    <td><span class="value">{{ sumReady }}</span><br /><span class="oaPrevCellFooter">{{'OxidAnalysis_GoodsValue'|translate}}</span></td>
                 </tr>
             </table>
         </td>

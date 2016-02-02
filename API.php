@@ -5,7 +5,7 @@
  * @link http://piwik.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  * 
- * @copyright (c) 2011-2015, Joachim Barthel
+ * @copyright (c) 2011-2016, Joachim Barthel
  * @author Joachim Barthel <jobarthel@gmail.com>
  * @category Piwik_Plugins
  * @package OXID_Analysis
@@ -386,6 +386,10 @@ class API extends \Piwik\Plugin\API
             $sumRevenue += $value['revsum'];
             $sumMargin += $value['netmargin'];
             $dbData1[$i]['count'] = intFormat($dbData1[$i]['count'], $this);
+            $dbData1[$i]['custname'] = $this->oaTextFormat($dbData1[$i]['custname']);
+            $dbData1[$i]['custdeladdr'] = $this->oaTextFormat($dbData1[$i]['custdeladdr']);
+            $dbData1[$i]['average'] = $this->oaTextFormat($dbData1[$i]['average']);
+            $dbData1[$i]['payment'] = $this->oaTextFormat($dbData1[$i]['payment']);
             if (($period != 'day')&&($period != 'range')) {
                 $dbData1[$i]['average'] = $this->oaCurrFormat($dbData1[$i]['average'], $this);
                 if ( $dbData1[$i]['revsum'] > 0.0 )
@@ -408,6 +412,10 @@ class API extends \Piwik\Plugin\API
         $i = 0;
         foreach($dbData2 as $value) {
             $dbData2[$i]['dateval'] = $dbData2[$i]['dateval'] . ' ';    // just for sorting
+            $dbData2[$i]['custname'] = $this->oaTextFormat($dbData2[$i]['custname']);
+            $dbData2[$i]['custdeladdr'] = $this->oaTextFormat($dbData2[$i]['custdeladdr']);
+            $dbData2[$i]['average'] = $this->oaTextFormat($dbData2[$i]['average']);
+            $dbData2[$i]['payment'] = $this->oaTextFormat($dbData2[$i]['payment']);
             $sumStorno += $value['stornosum'];
             $dbData2[$i]['count'] = intFormat($dbData2[$i]['count'], $this);
             if (($period != 'day')&&($period != 'range')) {
@@ -789,9 +797,14 @@ class API extends \Piwik\Plugin\API
         $sumCIA = 0.0;
         $i = 0;
         foreach($dbData as $value) {
-                $sumCIA += $value['ordersum'];
-                $dbData[$i]['ordersum'] = $this->oaCurrFormat($dbData[$i]['ordersum'], $this);
-                $i++;
+            $sumCIA += $value['ordersum'];
+            $dbData[$i]['company'] = $this->oaTextFormat($dbData[$i]['company']);
+            $dbData[$i]['name'] = $this->oaTextFormat($dbData[$i]['name']);
+            $dbData[$i]['custdeladdr'] = $this->oaTextFormat($dbData[$i]['custdeladdr']);
+            $dbData[$i]['ordersum'] = $this->oaCurrFormat($dbData[$i]['ordersum'], $this);
+            $dbData[$i]['orderlist'] = $this->oaTextFormat($dbData[$i]['orderlist']);
+            $dbData[$i]['paytype'] = $this->oaTextFormat($dbData[$i]['paytype']);
+            $i++;
         }
         if ($this->DebugMode) logfile('debug', $dbData);
 
@@ -1914,10 +1927,11 @@ class API extends \Piwik\Plugin\API
 
         $i = 0;
         foreach($dbData as $value) {
-                $dbData[$i]['artcount'] = intFormat($dbData[$i]['artcount'], $this);
-                $dbData[$i]['artrev'] = $this->oaCurrFormat($dbData[$i]['artrev'], $this);
-                $dbData[$i]['artmargin'] = $this->oaCurrFormat($dbData[$i]['artmargin'], $this);
-                $i++;
+            $dbData[$i]['arttitle'] = $this->oaTextFormat($dbData[$i]['arttitle']);
+            $dbData[$i]['artcount'] = intFormat($dbData[$i]['artcount'], $this);
+            $dbData[$i]['artrev'] = $this->oaCurrFormat($dbData[$i]['artrev'], $this);
+            $dbData[$i]['artmargin'] = $this->oaCurrFormat($dbData[$i]['artmargin'], $this);
+            $i++;
         }
 
         // convert this array to a DataTable object
@@ -1977,10 +1991,11 @@ class API extends \Piwik\Plugin\API
 
         $i = 0;
         foreach($dbData as $value) {
-                $dbData[$i]['artcount'] = intFormat($dbData[$i]['artcount'], $this);
-                $dbData[$i]['artrev'] = $this->oaCurrFormat($dbData[$i]['artrev'], $this);
-                $dbData[$i]['artmargin'] = $this->oaCurrFormat($dbData[$i]['artmargin'], $this);
-                $i++;
+            $dbData[$i]['arttitle'] = $this->oaTextFormat($dbData[$i]['arttitle']);
+            $dbData[$i]['artcount'] = intFormat($dbData[$i]['artcount'], $this);
+            $dbData[$i]['artrev'] = $this->oaCurrFormat($dbData[$i]['artrev'], $this);
+            $dbData[$i]['artmargin'] = $this->oaCurrFormat($dbData[$i]['artmargin'], $this);
+            $i++;
         }
 
         // convert this array to a DataTable object
@@ -3017,25 +3032,6 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
 
         if ($this->DebugMode) logfile('debug', $dbData);
 
-        /*$i = 0;
-        foreach($dbData as $value) {
-            $dbData[$i]['oxdiscount'] = $this->oaCurrFormat($dbData[$i]['oxdiscount'], $this);
-            $dbData[$i]['oxtotalordersum'] = $this->oaCurrFormat($dbData[$i]['oxtotalordersum'], $this);
-
-            $sql = "SELECT oxamount, oxtitle "
-                    . "FROM oxorderarticles "
-                    . "WHERE oxorderid = '{$dbData[$i]['oxid']}' "
-                        . "AND oxstorno = 0 ";
-            $dbData = $this->oaQuery($db, $sql, 'getVoucherUse');
-            $dbData[$i]['oxdetails'] = Piwik::translate('OxidAnalysis_Order') . ':';
-            foreach ($details as $detail) {
-                $dbData[$i]['oxdetails'] = $dbData[$i]['oxdetails'] . chr(13) . $detail['oxamount'] . ' x ' . $detail['oxtitle'];
-            }
-            $dbData[$i]['oxvouchernr'] = addTitle($dbData[$i]['oxvouchernr'], $dbData[$i]['oxseriedescription']);
-            $dbData[$i]['oxtotalordersum'] = addTitle($dbData[$i]['oxtotalordersum'], $dbData[$i]['oxdetails']);
-            $i++;
-        }*/
-
         $db = null;
 
         $dataTable = new DataTable();
@@ -3347,6 +3343,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
                 $orderInfo = $dbData[$i]['ordercount'] . '&nbsp;' . Piwik::translate('OxidAnalysis_Orders');
             $dbData[$i]['ordersum'] = addTitle($dbData[$i]['ordersum'], $orderInfo);
             $dbData[$i]['ordercount'] = intFormat($dbData[$i]['ordercount'], $this);
+            $dbData[$i]['oxdboptin'] = $this->oaTextFormat($dbData[$i]['oxdboptin']);
             $i++;
         }
 
@@ -3428,7 +3425,7 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
                     . "(SELECT a2.oxtitle FROM oxarticles a2 WHERE a2.oxid = a.oxparentid)) "
                     . "AS oxtitle, "
                 . "a.oxartnum, a.oxprice, "
-                . "CONCAT(SUBSTRING(r.oxtext, 1, 80), IF(CHAR_LENGTH(r.oxtext)>80,'...','')) AS shorttext, "
+                . "CONCAT(SUBSTRING(r.oxtext, 1, 40), IF(CHAR_LENGTH(r.oxtext)>40,'...','')) AS shorttext, "
                 . "r.oxtext AS oxtext, CONCAT('<img src=\"plugins/OxidAnalysis/images/rateds', r.oxrating, '.png\">') AS oxrating, "
                 . "CONCAT(u.oxfname, '&nbsp;', u.oxlname, CHAR(13), u.oxstreet, '&nbsp;', u.oxstreetnr, CHAR(13), u.oxzip, 'nbsp;', u.oxcity) AS name, u.oxusername AS oxemail "
                 //. "u.oxlname, u.oxusername AS oxemail, u.oxstreet, u.oxstreetnr, u.oxzip, u.oxcity "
@@ -3473,13 +3470,130 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
 
         $i = 0;
         foreach($dbData1 as $value) {
-            $dbData1[$i]['shorttext'] = '<div style="display:block;">'.addTitle($dbData1[$i]['shorttext'], $dbData1[$i]['oxtext']).'</div>';
+            $dbData1[$i]['oxtitle'] = $this->oaTextFormat($dbData1[$i]['oxtitle']);
+            $dbData1[$i]['shorttext'] = $this->oaTextFormat( addTitle($dbData1[$i]['shorttext'], $dbData1[$i]['oxtext']) );
             $dbData1[$i]['oxrating'] = addTitle($dbData1[$i]['oxrating'], $dbData1[$i]['name']);
             $i++;
         }
 
         $dataTable = new DataTable();
         $dataTable = DataTable::makeFromIndexedArray($dbData1);
+
+        return $dataTable;  
+    }
+
+
+    function getMonthlyRevenueComparison($idSite, $period, $date, $segment = false)
+    {
+        include PIWIK_INCLUDE_PATH . '/plugins/OxidAnalysis/conf/'.'config.inc.php';
+        $site = new Site($idSite);
+        $this->SiteID = $idSite;
+        $this->Currency = $site->getCurrency();
+
+        $db = openDB($this);
+
+        //$actualYear = (int) date("Y", strtotime($date));
+        $actualYear = (int) date("Y");
+        $sql = "SELECT MONTH(oxorderdate) AS actmonth, SUM(oxtotalbrutsum) AS actordersum "
+                . "FROM oxorder "
+                . "WHERE YEAR(oxorderdate) = $actualYear "
+                    . "AND oxstorno = 0 "
+                    . "AND oxshopid = {$this->ShopID[$idSite]} "
+                . "GROUP BY MONTH(oxorderdate) ";
+
+        $dbData1 = $this->oaQuery($db, $sql, 'getMonthlyRevenueComparison');
+        for($i = 1; $i <= 12; $i++) {
+            if ( checkExistsInArray($i, $dbData1) == FALSE ) {
+                array_push($dbData1, array(
+                                        'actmonth' => $i, 
+                                        'actordersum' => 0.0));
+            }
+        }
+        if ($this->DebugMode) logfile('debug', $dbData1);
+        
+        $previousYear = $actualYear - 1;
+        $sql = "SELECT MONTH(oxorderdate) AS prevmonth, SUM(oxtotalbrutsum) AS prevordersum "
+                . "FROM oxorder "
+                . "WHERE YEAR(oxorderdate) = $previousYear "
+                    . "AND oxstorno = 0 "
+                    . "AND oxshopid = {$this->ShopID[$idSite]} "
+                . "GROUP BY MONTH(oxorderdate) ";
+
+        $dbData2 = $this->oaQuery($db, $sql, 'getMonthlyRevenueComparison');
+        for($i = 1; $i <= 12; $i++) {
+            if ( checkExistsInArray($i, $dbData2) == FALSE ) {
+                array_push($dbData2, array(
+                                        'prevmonth' => $i, 
+                                        'prevordersum' => 0.0));
+            }
+        }
+        
+        //$dbData = array_merge( $dbData1, $dbData2 );
+        $dbData = array();
+        $monthPerc = 0.0;
+        $prevSum = 0.0;
+        $actSum = 0.0;
+        $sumPerc = 0.0;
+        $totalPerc = 0.0;
+        $actualMonth = (int)date("n");
+        for($i = 1; $i <= 12; $i++) {
+            $actOrderSum = $dbData1[$i-1]['actordersum'];
+            if ($i == $actualMonth) {
+                $daysPerMonth = (int)date("t");
+                $actualDay = (int)date("j");
+                //$remainingDays = (int) $daysPerMonth - $actualDay;
+                $actOrderSum = $dbData1[$i-1]['actordersum'] / $actualDay * $daysPerMonth;
+            }
+            if ($i > $actualMonth) {
+                $actOrderSum = $dbData2[$i-1]['prevordersum'];
+            }
+            $monthPerc = ($actOrderSum - $dbData2[$i-1]['prevordersum']) / $dbData2[$i-1]['prevordersum'] * 100.0;
+            $prevSum += $dbData2[$i-1]['prevordersum'];
+            $actSum += $actOrderSum;
+            $totalPerc = ($actSum - $prevSum) / $prevSum * 100.0;
+            array_push($dbData, array(
+                'month' => $i,
+                'prevordersum' => $dbData2[$i-1]['prevordersum'],
+                'actordersum' => $actOrderSum,
+                'monthperc' => percFormat( $monthPerc, $this ),
+                'prevtotalsum' => $prevSum,
+                'acttotalsum' => $actSum,
+                'totalperc' => percFormat( $totalPerc, $this )
+            ));
+        }
+        if ($this->DebugMode) logfile('debug', $dbData);
+        
+        /*
+        if (count($dbData) !=0 )
+            $totalSum = $dbData[0]['totalsum'];
+        else
+            $totalSum = 0.0;
+
+        $sql = "SELECT p.oxdesc, COUNT(*) AS ordercount, SUM(o.oxtotalordersum) AS totalordersum, (SUM(o.oxtotalordersum)/$totalSum*100.0) AS percentage "
+                 . "FROM oxorder o, oxpayments p " 
+                 . "WHERE p.oxid = o.oxpaymenttype "
+                    . "AND p.oxactive = 1 "
+                    . "AND YEAR(o.oxorderdate) = $selectedYear "
+                    . "AND o.oxstorno = 0 "
+                    . "AND o.oxshopid = {$this->ShopID[$idSite]} "
+                 . "GROUP BY p.oxdesc "
+                 . "ORDER BY totalordersum DESC "; 
+        $dbData = $this->oaQuery($db, $sql, 'getPayTypeSums');
+        */
+
+        $db = null;
+        
+        /*
+        $i = 0;
+        foreach($dbData as $value) {
+            $dbData[$i]['totalordersum'] = $this->oaCurrFormat($dbData[$i]['totalordersum'], $this);
+            $dbData[$i]['percentage'] = percFormat($dbData[$i]['percentage'], $this);
+           $i++;
+        }
+        */
+
+        $dataTable = new DataTable();
+        $dataTable = DataTable::makeFromIndexedArray($dbData);
 
         return $dataTable;  
     }
@@ -3495,8 +3609,9 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
         $selectedYear = date("Y", strtotime($date));
         $sql = "SELECT sum(oxtotalordersum) AS totalsum "
                 . "FROM oxorder "
-                . "WHERE YEAR(oxorderdate)=$selectedYear AND oxstorno=0 "
-                . "AND oxshopid = {$this->ShopID[$idSite]} "
+                . "WHERE YEAR(oxorderdate) = $selectedYear "
+                    . "AND oxstorno = 0 "
+                    . "AND oxshopid = {$this->ShopID[$idSite]} "
                 . "GROUP BY YEAR(oxorderdate) ";
 
         $db = openDB($this);
@@ -3509,8 +3624,11 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
 
         $sql = "SELECT p.oxdesc, COUNT(*) AS ordercount, SUM(o.oxtotalordersum) AS totalordersum, (SUM(o.oxtotalordersum)/$totalSum*100.0) AS percentage "
                  . "FROM oxorder o, oxpayments p " 
-                 . "WHERE p.oxid=o.oxpaymenttype AND p.oxactive=1 AND YEAR(o.oxorderdate)=$selectedYear AND o.oxstorno=0 "
-                 . "AND o.oxshopid = {$this->ShopID[$idSite]} "
+                 . "WHERE p.oxid = o.oxpaymenttype "
+                    . "AND p.oxactive = 1 "
+                    . "AND YEAR(o.oxorderdate) = $selectedYear "
+                    . "AND o.oxstorno = 0 "
+                    . "AND o.oxshopid = {$this->ShopID[$idSite]} "
                  . "GROUP BY p.oxdesc "
                  . "ORDER BY totalordersum DESC "; 
         $dbData = $this->oaQuery($db, $sql, 'getPayTypeSums');
@@ -3758,7 +3876,8 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
 
         $data = $this->oaQuery($db, $sql, 'getLogisticsData');
         $dbData['open']['count'] = $data[0]['countready'];
-        $dbData['open']['sum'] = $this->oaCurrFormat($data[0]['sumready'],$this,false);
+        $dbData['open']['sum'] = floatval($data[0]['sumready']); //$this->oaCurrFormat($data[0]['sumready'],$this,false);
+        //$dbData['open']['sum'] = number_format($dbData['open']['sum'], $this->DecimalPoint, $this->ThousandsSep);
 
         $db = null;
 
@@ -3945,6 +4064,11 @@ if ($this->DebugMode) logfile('debug', 'vor Switch');
         else
             return ( number_format($value, 2).' '.MetricsFormatter::getCurrencySymbol($conf->SiteID) );
          */
+    }
+    
+    function oaTextFormat($text='', $align='left')
+    {
+        return ( '<div style="text-align:' . $align . ';">' .$text . '</div>' );
     }
 	
 }

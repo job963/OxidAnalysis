@@ -5,7 +5,7 @@
  * @link http://piwik.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
- * @copyright (c) 2011-2015, Joachim Barthel
+ * @copyright (c) 2011-2016, Joachim Barthel
  * @author Joachim Barthel <jobarthel@gmail.com>
  * @category Piwik_Plugins
  * @package OXID_Analysis
@@ -396,7 +396,7 @@ class Controller extends \Piwik\Plugin\Controller
         $view->requestConfig->filter_limit = 5;
         $view->config->show_exclude_low_population = false;
         $view->config->show_table_all_columns = false;
-        $view->config->show_all_views_icons = false;
+        $view->config->show_all_views_icons = true;
         $view->config->disable_row_evolution  = true;
         $view->config->show_search = false;
         
@@ -629,6 +629,43 @@ class Controller extends \Piwik\Plugin\Controller
 	
 	
     /**
+     * This widget shows the revenue sums of eachmonth of the actual and previous year
+     **/
+    function widgetMonthlyRevenueComparison()
+    {
+        $controllerAction = $this->pluginName . '.' . __FUNCTION__;
+        $apiAction = 'OxidAnalysis.getMonthlyRevenueComparison';
+
+        $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
+        
+        $actualYear = (int) date("Y");
+        $previousYear = $actualYear - 1;
+        
+        $view->config->columns_to_display = array('month', 'prevordersum', 'actordersum', 'monthperc', 'prevtotalsum', 'acttotalsum', 'totalperc');
+        $view->config->translations['month'] = Piwik::translate('OxidAnalysis_Month');
+        $view->config->translations['prevordersum'] = Piwik::translate('OxidAnalysis_Revenue') . ' ' . $previousYear;
+        $view->config->translations['actordersum'] = Piwik::translate('OxidAnalysis_Revenue') . ' ' . $actualYear;
+        $view->config->translations['monthperc'] = Piwik::translate('OxidAnalysis_Percentage');
+        $view->config->translations['prevtotalsum'] = Piwik::translate('OxidAnalysis_Revenue') . ' ' . $previousYear;
+        $view->config->translations['acttotalsum'] = Piwik::translate('OxidAnalysis_Revenue') . ' ' . $actualYear;
+        $view->config->translations['totalperc'] = Piwik::translate('OxidAnalysis_Percentage');
+
+        $view->requestConfig->filter_sort_column = 'prevmonth';
+        $view->requestConfig->filter_sort_order = 'asc';
+
+        $view->requestConfig->filter_limit = 12;
+        $view->config->show_exclude_low_population = false;
+        $view->config->show_table_all_columns = false;
+        $view->config->show_all_views_icons = false;
+        $view->config->disable_row_evolution  = true;
+        $view->config->enable_sort = false;
+        $view->config->show_search = false;
+
+        return $view->render();
+    }
+	
+	
+    /**
      * This widget shows the sums of the open payments for each payment type (all time)
      **/
     function widgetOpenPaytypeSums()
@@ -800,7 +837,8 @@ class Controller extends \Piwik\Plugin\Controller
 
         $view = ViewDataTableFactory::build('table', $apiAction, $controllerAction);
 
-	$view->config->columns_to_display = array('artno', 'arttitle', 'artcount', 'artrev');
+	//doesn't work -- $view->config->documentation = Piwik::translate('OxidAnalysis_RevenueTitle', array('<br />', '<br />'));
+        $view->config->columns_to_display = array('artno', 'arttitle', 'artcount', 'artrev');
 		
 		 
         switch ($periodRange) {
@@ -1291,6 +1329,8 @@ class Controller extends \Piwik\Plugin\Controller
         $output .= '<td>'.'<h3>' . Piwik::translate('OxidAnalysis_TopSeller') . '</h3>';
         $output .= $this->tableTopSeller();
         $output .= '</td>';
+        
+        $output .= '</tr><tr>';
         
         $output .= '<td>'.'<h3>' . Piwik::translate('OxidAnalysis_TopCancels') . '</h3>';
         $output .= $this->tableTopCancels();

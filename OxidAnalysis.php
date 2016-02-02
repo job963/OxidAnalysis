@@ -5,7 +5,7 @@
  * @link http://piwik.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  * 
- * @copyright (c) 2011-2015, Joachim Barthel
+ * @copyright (c) 2011-2016, Joachim Barthel
  * @author Joachim Barthel <jobarthel@gmail.com>
  * @category Piwik_Plugins
  * @package OXID_Analysis
@@ -83,6 +83,7 @@ class OxidAnalysis extends \Piwik\Plugin
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetRevenueAlert', 'OxidAnalysis', 'widgetRevenueAlert');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetReturningCustomers', 'OxidAnalysis', 'widgetReturningCustomers');
         WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetCountryRevenue', 'OxidAnalysis', 'widgetCountryRevenue');
+        WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetMonthlyRevenueComparison', 'OxidAnalysis', 'widgetMonthlyRevenueComparison');
         $idSite = Common::getRequestVar('idSite', 1, 'int');
         if ($this->UseReferer[$idSite]) {
             WidgetsList::add('OXID Analysis', 'OxidAnalysis_widgetRefererSummary', 'OxidAnalysis', 'widgetRefererSummary');

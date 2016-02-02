@@ -1,6 +1,6 @@
 {
     "OxidAnalysis": {
-        "PluginDescription": "OXID eShop Analyse: Dieses Plugin analysiert und visualisiert Daten der eCommerce Lösung OXID eSales.",
+        "PluginDescription": "OXID eShop Analyse: Dieses Plugin analysiert und visualisiert Daten der eCommerce Lösung OXID eSales",
 	"OxidAnalysis": "OXID",
         
 	"OxidWidgets": "OXID eShop Analyse",
@@ -23,6 +23,7 @@
         "widgetReturningCustomers": "OXID - Einmalige&wiederkehrende Kunden",
         "widgetRefererSummary": "OXID - Referrer-Übersicht",
         "widgetCountryRevenue": "OXID - Länder-Umsatz",
+        "widgetMonthlyRevenueComparison": "OXID - Montl. Umsatzvergleich",
         
 	"NoEntries": "Keine Einträge",
 	"Period": "Zeitraum",
